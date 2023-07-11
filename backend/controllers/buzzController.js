@@ -2,7 +2,6 @@ const Buzz = require('../models/buzzModel')
 
 const createBuzz = async (req, res) => {
     const { message } = req.body
-    console.log(message)
     if(!message){
         return res.status(400).json("Please enter a message")
     }
