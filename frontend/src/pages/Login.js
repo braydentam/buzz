@@ -1,10 +1,13 @@
 import { React, useState } from "react";
-import { useLogin } from "../api/requests";
+import { login } from "../api/requests";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { login, error } = useLogin();
+  const [error, setError] = useState("");
+  const { dispatch } = useAuthContext();
+  
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -12,7 +15,11 @@ const Login = () => {
       password: password,
     };
     const response = (data) => {
-      console.log(data);
+      if(data["error"]){
+        setError(data["error"]);
+      }else{
+        dispatch({ type: "LOGIN", payload: data });
+      }
     };
     e.preventDefault();
     await login(reqData, response);

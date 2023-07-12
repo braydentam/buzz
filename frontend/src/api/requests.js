@@ -1,35 +1,125 @@
 import axios from "axios";
 import * as url from "./urls";
-import { useState } from "react"
 
-export const useLogin = () => {
-  const [error, setError] = useState(null)
-
-  const login = async (req, res) => {
-    setError(null)
-    const { username, password } = req;
-    if (!username || !password)
-      return res.status(400).send("Please enter username/password");
-    var formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
-    var config = {
-      method: "post",
-      url: url.LOGIN,
-      headers: formdata.getHeaders
-        ? formdata.getHeaders()
-        : { "Content-Type": "multipart/form-data" },
-      data: formdata,
-    };
-    axios(config)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error.response.data.error);
-        setError(error.response.data.error);
-      });
-    
+export const login = async (req, res) => {
+  const { username, password } = req;
+  if (!username || !password)
+    return res.status(400).send("Please enter username/password");
+  var formdata = new FormData();
+  formdata.append("username", username);
+  formdata.append("password", password);
+  var config = {
+    method: "post",
+    url: url.LOGIN,
+    headers: formdata.getHeaders
+      ? formdata.getHeaders()
+      : { "Content-Type": "multipart/form-data" },
+    data: formdata,
   };
-  return { login, error };
+  axios(config)
+    .then(function (response) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const signup = async (req, res) => {
+  const { name, username, password } = req;
+  if (!name || !username || !password)
+    return res.status(400).send("Please enter name/username/password");
+  var formdata = new FormData();
+  formdata.append("name", name);
+  formdata.append("username", username);
+  formdata.append("password", password);
+  var config = {
+    method: "post",
+    url: url.SIGNUP,
+    headers: formdata.getHeaders
+      ? formdata.getHeaders()
+      : { "Content-Type": "multipart/form-data" },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      localStorage.setItem("user", JSON.stringify(response.data));
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const getExplore = async (res) => {
+  var config = {
+    method: "get",
+    url: url.GETEXPLORE,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const createBuzz = async (req, res) => {
+  const { message } = req;
+  if (!message) return res.status(400).send("Please enter a message");
+  var formdata = new FormData();
+  formdata.append("message", message);
+  var config = {
+    method: "post",
+    url: url.CREATEBUZZ,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      console.log(response.data);
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
 };

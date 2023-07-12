@@ -7,6 +7,14 @@ const buzzSchema = new Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
     message: {
       type: String,
       required: true,
