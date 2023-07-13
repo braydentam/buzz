@@ -1,16 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { useLogout } from "../hooks/useLogout";
 
 const Navbar = () => {
   const { user } = useAuthContext();
+  const { logout } = useLogout();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div>
       <div className="">
         <div className="fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
           <div className="flex items-center justify-center h-14 border-b">
             <div>
-              <h1 className="text-5xl font-extrabold dark:text-white">Buzz</h1>
+              <h1 className="text-5xl font-extrabold">Buzz</h1>
             </div>
           </div>
 
@@ -155,7 +162,7 @@ const Navbar = () => {
                         </svg>
                       </span>
                       <span className="ml-2 text-sm tracking-wide truncate">
-                        Logout
+                        <button onClick={handleLogout}>Logout</button>
                       </span>
                     </span>
                   </li>
