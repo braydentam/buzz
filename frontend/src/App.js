@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Navbar from "./components/Navbar";
 import Buzz from "./pages/Buzz";
+import Posts from "./pages/Posts";
 import { useAuthContext } from "./hooks/useAuthContext";
 
 function App() {
@@ -27,8 +28,14 @@ function App() {
             element={!user ? <Signup /> : <Navigate to="/" />}
           />
           <Route
-            exact path="/buzz/:id"
+            exact
+            path="/buzz/:id"
             element={user ? <Buzz /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/posts"
+            element={user ? <Posts /> : <Navigate to="/login" />}
           />
         </Routes>
       </BrowserRouter>

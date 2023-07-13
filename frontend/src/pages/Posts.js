@@ -1,39 +1,37 @@
 import { React, useEffect, useState } from "react";
 import Buzzes from "../components/Buzzes";
-import { useBuzzContext } from "../hooks/useBuzzContext";
-import { useAuthContext } from "../hooks/useAuthContext";
-import { getExplore } from "../api/requests";
-import CreateBuzz from "../components/CreateBuzz";
 import { useNavigate } from "react-router-dom";
+import { getByUser } from "../api/requests";
 
-const Home = () => {
-  const { buzz, dispatch } = useBuzzContext();
-  const navigate = useNavigate();
+const Posts = () => {
   const [error, setError] = useState("");
-  const { user } = useAuthContext();
+  const [buzz, setBuzz] = useState(null);
+  const navigate = useNavigate();
+  const id = JSON.parse(localStorage.getItem("user"))["id"];
+  console.log(id);
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
   useEffect(() => {
+    let reqData = {
+      id: id,
+    };
     setError("");
     const response = (data) => {
-      if (data) {
-        if (data["error"]) {
-          setError(data["error"].message);
-          dispatch({ type: "SET_BUZZ", payload: null });
-        } else {
-          dispatch({ type: "SET_BUZZ", payload: data });
-        }
+      console.log(data);
+      if (data["error"]) {
+        setError(data["error"].message);
+      } else {
+        console.log(data);
+        setBuzz(data);
       }
     };
-    if (user) {
-      getExplore(response);
-    }
-  }, [dispatch, user]);
+    getByUser(reqData, response);
+  }, [id]);
   return (
     <div className="ml-64">
       <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-        Explore Buzzes
+        My Buzzes
       </h1>
       {buzz &&
         buzz.map((b) => (
@@ -46,10 +44,8 @@ const Home = () => {
           />
         ))}
       {error && <div className="error">{error}</div>}
-
-      <CreateBuzz />
     </div>
   );
 };
 
-export default Home;
+export default Posts;

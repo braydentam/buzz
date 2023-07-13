@@ -85,9 +85,9 @@ export const getExplore = async (res) => {
     })
     .catch(function (error) {
       if (res) {
-        res({ error: error.response.data.error });
+        res({ error: error });
       }
-      return { error: error.response.data.error };
+      return { error: error };
     });
 };
 
@@ -95,7 +95,7 @@ export const getById = async (req, res) => {
   const { id } = req;
   var config = {
     method: "get",
-    url: url.GETBYID + '/' + id,
+    url: url.GETBYID + "/" + id,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
@@ -114,6 +114,33 @@ export const getById = async (req, res) => {
         res({ error: error.response.data.error });
       }
       return { error: error.response.data.error };
+    });
+};
+
+export const getByUser = async (req, res) => {
+  const { id } = req;
+  var config = {
+    method: "get",
+    url: url.GETBYUSER + "/" + id,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error);
+      if (res) {
+        res({ error: error });
+      }
+      return { error: error };
     });
 };
 
