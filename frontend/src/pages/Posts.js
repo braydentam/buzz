@@ -8,7 +8,6 @@ const Posts = () => {
   const [buzz, setBuzz] = useState(null);
   const navigate = useNavigate();
   const id = JSON.parse(localStorage.getItem("user"))["id"];
-  console.log(id);
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
@@ -18,11 +17,9 @@ const Posts = () => {
     };
     setError("");
     const response = (data) => {
-      console.log(data);
       if (data["error"]) {
         setError(data["error"].message);
       } else {
-        console.log(data);
         setBuzz(data);
       }
     };
@@ -30,9 +27,11 @@ const Posts = () => {
   }, [id]);
   return (
     <div className="ml-64">
-      <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-        My Buzzes
-      </h1>
+      {buzz && (
+        <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+          My Buzzes
+        </h1>
+      )}
       {buzz &&
         buzz.map((b) => (
           <Buzzes

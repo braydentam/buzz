@@ -32,9 +32,14 @@ const Home = () => {
   }, [dispatch, user]);
   return (
     <div className="ml-64">
-      <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-        Explore Buzzes
-      </h1>
+      {buzz && (
+        <>
+          <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+            Explore Buzzes
+          </h1>
+          <CreateBuzz />
+        </>
+      )}
       {buzz &&
         buzz.map((b) => (
           <Buzzes
@@ -46,8 +51,6 @@ const Home = () => {
           />
         ))}
       {error && <div className="error">{error}</div>}
-
-      <CreateBuzz />
     </div>
   );
 };

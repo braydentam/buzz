@@ -19,6 +19,10 @@ const buzzSchema = new Schema(
       type: String,
       required: true,
     },
+    likes: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
