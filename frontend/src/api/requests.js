@@ -176,9 +176,7 @@ export const createBuzz = async (req, res) => {
     });
 };
 
-
 export const like = async (req, res) => {
-  console.log(req);
   const { id } = req;
   if (!id) return res.status(400).send("Please enter a id");
   var formdata = new FormData();
@@ -196,6 +194,40 @@ export const like = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+
+export const follow = async (req, res) => {
+  const { id } = req;
+  if (!id) return res.status(400).send("Please enter a id");
+  var formdata = new FormData();
+  formdata.append("follow_id", id);
+  var config = {
+    method: "post",
+    url: url.FOLLOW,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      console.log(response);
       if (res) {
         res(response.data);
       }
