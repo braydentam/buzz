@@ -61,7 +61,22 @@ const like = async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: user_id });
     if (profile.hasLiked(id)) {
-      return res.status(400).json({ error: "Already Liked" });
+      await Buzz.findOneAndUpdate(
+        { _id: id },
+        { $pull: { likes: user_id } },
+        {
+          new: true,
+        }
+      );
+      await Profile.findOneAndUpdate(
+        { user: user_id },
+        { $pull: { likes: id } },
+        {
+          new: true,
+        }
+      );
+      const buzz = await Buzz.find({}).sort({ createdAt: -1 });
+      return res.status(200).json({ buzz: buzz, action: "unliked" });
     }
     await Buzz.findOneAndUpdate(
       { _id: id },
@@ -79,7 +94,7 @@ const like = async (req, res) => {
     );
     //TODO: ADD DELETE FROM ARRAY TO UNLIKE
     const buzz = await Buzz.find({}).sort({ createdAt: -1 });
-    res.status(200).json(buzz);
+    res.status(200).json({ buzz: buzz, action: "liked" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

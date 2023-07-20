@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { like, follow } from "../api/requests";
 
@@ -6,16 +6,32 @@ const Buzzes = (buzz) => {
   const b = buzz.buzz;
   const { dispatch } = useBuzzContext();
   const [error, setError] = useState("");
+  const [likeStatus, setLikeStatus] = useState("");
+
+  function isSameId(id){
+    console.log(id);
+    console.log(localStorage.getItem("user")["id"]);
+    if(id === JSON.parse(localStorage.getItem("user"))["id"]){
+      setLikeStatus("liked");
+    }
+  }
+  useEffect(() => {
+    b.likes && b.likes.map((like_id) => (
+      isSameId(like_id)
+    ))
+  }, [dispatch, b.likes]);
 
   const handleLike = async () => {
     let reqData = {
       id: b._id,
     };
     const response = (data) => {
+      console.log(data);
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "SET_BUZZ", payload: data });
+        dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
+        setLikeStatus(data["action"]);
       }
     };
     await like(reqData, response);
@@ -79,13 +95,13 @@ const Buzzes = (buzz) => {
             e.stopPropagation();
           }}
         >
-          <div className="flex p-1 rounded-lg items-center outline outline-offset-0 outline-red-500 bg-white hover:drop-shadow-lg">
+          <div className={likeStatus === "liked" ? "flex p-1 rounded-lg items-center outline outline-offset-0 outline-red-500 bg-red-500 hover:drop-shadow-lg" : "flex p-1 rounded-lg items-center outline outline-offset-0 outline-red-500 bg-white hover:drop-shadow-lg"}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth="1.5"
-              stroke="red"
+              stroke={likeStatus === "liked" ? "white" : "red"}
               className="w-5 h-5"
             >
               <path
@@ -94,7 +110,7 @@ const Buzzes = (buzz) => {
                 d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
               />
             </svg>
-            <div className="text-red-500 text-lg ml-15">
+            <div className={likeStatus === "liked" ? "text-white text-lg ml-15": "text-red-500 text-lg ml-15"}>
               {b.likes ? b.likes.length : 0}
             </div>
           </div>
