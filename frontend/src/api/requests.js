@@ -208,6 +208,32 @@ export const like = async (req, res) => {
     });
 };
 
+export const getProfile = async (res) => {
+  var config = {
+    method: "get",
+    url: url.GETPROFILE,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      localStorage.setItem("profile", JSON.stringify(response.data));
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      if (res) {
+        res({ error: error });
+      }
+      return { error: error };
+    });
+};
+
 
 export const follow = async (req, res) => {
   const { id } = req;
@@ -227,7 +253,6 @@ export const follow = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      console.log(response);
       if (res) {
         res(response.data);
       }

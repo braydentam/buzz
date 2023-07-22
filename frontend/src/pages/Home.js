@@ -2,12 +2,14 @@ import { React, useEffect, useState } from "react";
 import Buzzes from "../components/Buzzes";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useAuthContext } from "../hooks/useAuthContext";
-import { getExplore } from "../api/requests";
+import { useProfileContext } from "../hooks/useProfileContext";
+import { getExplore, getProfile } from "../api/requests";
 import CreateBuzz from "../components/CreateBuzz";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { buzz, dispatch } = useBuzzContext();
+  const { dispatch: dispatchProfile } = useProfileContext();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const { user } = useAuthContext();
@@ -30,6 +32,24 @@ const Home = () => {
       getExplore(response);
     }
   }, [dispatch, user]);
+
+  useEffect(() => {
+    setError("");
+    const response = (data) => {
+      if (data) {
+        if (data["error"]) {
+          setError(data["error"].message);
+          dispatchProfile({ type: "SET_PROFILE", payload: null });
+        } else {
+          console.log(data);
+          dispatchProfile({ type: "SET_PROFILE", payload: data });
+        }
+      }
+    };
+    if (user) {
+      getProfile(response);
+    }
+  }, [dispatchProfile, user]);
   return (
     <div className="ml-64">
       {buzz && (
