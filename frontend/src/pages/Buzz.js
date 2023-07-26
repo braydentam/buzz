@@ -27,10 +27,23 @@ const Buzz = () => {
       {buzz && (
         <div className="ml-64">
           <div className="block m-10 rounded-md bg-white p-6 pb-20 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-            <h5 className="mb-2 text-xl font-medium leading-tight text-neutral-800">
-              {buzz.name}
-              <span className="text-gray-400"> @{buzz.username}</span>
-            </h5>
+            <button
+              c
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <span className="">
+                <div className="pr-1 text-lg text-xl font-medium leading-tight text-neutral-800 hover:text-blue-500 hover:underline">
+                  {buzz.name}
+                </div>
+                {/* TODO: Make this lead to a user's profile, and follow them from there*/}
+              </span>
+            </button>
+            <span className="text-lg text-xl font-medium leading-tight text-gray-400">
+              {" "}
+              @{buzz.username}
+            </span>
             <p className="mb-4 text-base text-neutral-600">{buzz.message}</p>
           </div>
         </div>

@@ -45,7 +45,7 @@ const getById = async (req, res) => {
 const getByUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const buzz = await Buzz.find({ user_id: id }).sort({ createdAt: -1 });
+    const buzz = await Buzz.find({ username: id }).sort({ createdAt: -1 });
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });

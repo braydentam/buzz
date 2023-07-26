@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from "react";
 import { useBuzzContext } from "../hooks/useBuzzContext";
+import { useNavigate } from "react-router-dom";
 import { like } from "../api/requests";
 
 const Buzzes = (buzz) => {
@@ -7,12 +8,17 @@ const Buzzes = (buzz) => {
   const { dispatch: dispatchBuzz } = useBuzzContext();
   const [error, setError] = useState("");
   const [likeStatus, setLikeStatus] = useState("");
+  const navigate = useNavigate();
 
   function isLiked(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
       setLikeStatus("liked");
     }
   }
+
+  const handleProfile = () => {
+    navigate("/profile/" + b.username);
+  };
 
   useEffect(() => {
     b.likes && b.likes.map((like_id) => isLiked(like_id));
@@ -37,23 +43,26 @@ const Buzzes = (buzz) => {
   return (
     <div className="" onClick={buzz.onClick}>
       <div className="block m-10 rounded-md bg-white p-6 hover:bg-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className="flex">
-            <div className="text-lg text-xl font-medium leading-tight text-neutral-800">
-              {b.name}
-              <span className="text-gray-400 pr-3"> @{b.username}</span>
-            </div>
-            <span className="ml-15 flex items-center px-2 rounded-lg outline outline-offset-0 text-blue-500 outline-blue-500 hover:drop-shadow-lg hover:bg-blue-300">
-              <div className="text-lg ml-15">View Profile</div>
-
+        <div className="flex">
+          <button
+            c
+            onClick={(e) => {
+              handleProfile();
+              e.stopPropagation();
+            }}
+          >
+            <span className="">
+              <div className="pr-1 text-lg text-xl font-medium leading-tight text-neutral-800 hover:text-blue-500 hover:underline">
+                {b.name}
+              </div>
               {/* TODO: Make this lead to a user's profile, and follow them from there*/}
             </span>
-          </div>
-        </button>
+          </button>
+          <span className="text-lg text-xl font-medium leading-tight text-gray-400">
+            {" "}
+            @{b.username}
+          </span>
+        </div>
         <p className="mb-4 text-base text-neutral-600">{b.message}</p>
         <button
           onClick={(e) => {

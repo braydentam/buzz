@@ -1,13 +1,14 @@
 import { React, useEffect, useState } from "react";
 import Buzzes from "../components/Buzzes";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getByUser } from "../api/requests";
 
-const Posts = () => {
+const Profile = () => {
   const [error, setError] = useState("");
   const [buzz, setBuzz] = useState(null);
+  const { id } = useParams();
   const navigate = useNavigate();
-  const id = JSON.parse(localStorage.getItem("user"))["username"];
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
@@ -25,11 +26,12 @@ const Posts = () => {
     };
     getByUser(reqData, response);
   }, [id]);
+  
   return (
     <div className="ml-64">
       {buzz && (
-        <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-          My Buzzes
+        <h1 className="mb-4 text-3xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-3xl lg:text-5xl">
+          {id}'s Buzzes
         </h1>
       )}
       {buzz &&
@@ -47,4 +49,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Profile;
