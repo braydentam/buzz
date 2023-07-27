@@ -92,7 +92,6 @@ const like = async (req, res) => {
         new: true,
       }
     );
-    //TODO: ADD DELETE FROM ARRAY TO UNLIKE
     const buzz = await Buzz.find({}).sort({ createdAt: -1 });
     res.status(200).json({ buzz: buzz, action: "liked" });
   } catch (error) {
@@ -100,4 +99,17 @@ const like = async (req, res) => {
   }
 };
 
-module.exports = { createBuzz, getAllBuzz, getById, getByUser, like };
+const getFollowing = async (req, res) => {
+  const user_id = req.user._id;
+  if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    return res.status(400).json("Please enter an id");
+  }
+  try {
+    const userProfile = await Profile.findOne({ user: user_id });
+    const buzz = await Buzz.find({user_id: userProfile.following});
+    res.status(200).json(buzz);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+}
+module.exports = { createBuzz, getAllBuzz, getById, getByUser, like, getFollowing };

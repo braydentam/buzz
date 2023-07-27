@@ -41,7 +41,6 @@ const Home = () => {
           setError(data["error"].message);
           dispatchProfile({ type: "SET_PROFILE", payload: null });
         } else {
-          console.log(data);
           dispatchProfile({ type: "SET_PROFILE", payload: data });
         }
       }

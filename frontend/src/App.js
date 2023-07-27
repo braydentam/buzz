@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import Buzz from "./pages/Buzz";
 import Posts from "./pages/Posts";
 import Profile from "./pages/Profile";
+import Following from "./pages/Following";
 import { useAuthContext } from "./hooks/useAuthContext";
 
 function App() {
@@ -37,6 +38,11 @@ function App() {
             exact
             path="/posts"
             element={user ? <Posts /> : <Navigate to="/login" />}
+          />
+          <Route
+            exact
+            path="/following"
+            element={user ? <Following /> : <Navigate to="/login" />}
           />
           <Route
             exact

@@ -5,7 +5,7 @@ import { getById } from "../api/requests";
 const Buzz = () => {
   const { id } = useParams();
   const [error, setError] = useState("");
-  const [buzz, setBuzz] = useState(null);
+  const [buzz, dispatchBuzz] = useState(null);
 
   useEffect(() => {
     let reqData = {
@@ -16,7 +16,7 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        setBuzz(data);
+        dispatchBuzz(data);
       }
     };
     getById(reqData, response);
@@ -37,7 +37,6 @@ const Buzz = () => {
                 <div className="pr-1 text-lg text-xl font-medium leading-tight text-neutral-800 hover:text-blue-500 hover:underline">
                   {buzz.name}
                 </div>
-                {/* TODO: Make this lead to a user's profile, and follow them from there*/}
               </span>
             </button>
             <span className="text-lg text-xl font-medium leading-tight text-gray-400">

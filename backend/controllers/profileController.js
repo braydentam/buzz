@@ -58,7 +58,6 @@ const follow = async (req, res) => {
         new: true,
       }
     );
-    //TODO: ADD DELETE FROM ARRAY TO UNFOLLOW
     const userProfile = await Profile.find({ user: user_id }).sort({
       createdAt: -1,
     });

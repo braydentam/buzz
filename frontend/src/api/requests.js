@@ -266,3 +266,28 @@ export const follow = async (req, res) => {
       return { error: error.response.data.error };
     });
 };
+
+export const getFollowing = async (res) => {
+  var config = {
+    method: "get",
+    url: url.GETFOLLOWING,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      if (res) {
+        res({ error: error });
+      }
+      return { error: error };
+    });
+};

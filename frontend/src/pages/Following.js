@@ -1,21 +1,21 @@
 import { React, useEffect, useState } from "react";
 import Buzzes from "../components/Buzzes";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { getFollowing } from "../api/requests";
 import { useBuzzContext } from "../hooks/useBuzzContext";
-import { getByUser } from "../api/requests";
+//TODO: Sort and fix import structure to follow a specific ruleset
 
-const Posts = () => {
+const Following = () => {
   const [error, setError] = useState("");
   const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const id = JSON.parse(localStorage.getItem("user"))["username"];
+
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
   useEffect(() => {
-    let reqData = {
-      id: id,
-    };
     setError("");
     const response = (data) => {
       if (data["error"]) {
@@ -24,14 +24,17 @@ const Posts = () => {
         dispatchBuzz({ type: "SET_BUZZ", payload: data });
       }
     };
-    getByUser(reqData, response);
+    getFollowing(response);
   }, [id, dispatchBuzz]);
+
   return (
     <div className="ml-64">
-      {buzz && (
-        <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-          My Buzzes
-        </h1>
+        {buzz && (
+        <>
+          <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+            Following
+          </h1>
+        </>
       )}
       {buzz &&
         buzz.map((b) => (
@@ -48,4 +51,4 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Following;

@@ -5,6 +5,7 @@ const {
   getById,
   getByUser,
   like,
+  getFollowing
 } = require("../controllers/buzzController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -21,5 +22,7 @@ router.get("/getById/:id", getById);
 router.get("/getByUser/:id", getByUser);
 
 router.post("/like", like);
+
+router.get("/getFollowing", getFollowing)
 
 module.exports = router;
