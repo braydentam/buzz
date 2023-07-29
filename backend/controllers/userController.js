@@ -12,7 +12,7 @@ const signupUser = async (req, res) => {
     const user = await User.signup(name, username, password);
     const token = createToken(user._id);
     const id = user._id;
-    const profile = new Profile({ user: user._id });
+    const profile = new Profile({ user: user._id, name: name, username: username });
     Promise.all([profile.save()]);
     res.status(200).json({ username, id, token });
   } catch (error) {

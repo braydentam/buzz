@@ -145,10 +145,13 @@ export const getByUser = async (req, res) => {
 };
 
 export const createBuzz = async (req, res) => {
-  const { message } = req;
+  const { message, comment } = req;
   if (!message) return res.status(400).send("Please enter a message");
   var formdata = new FormData();
   formdata.append("message", message);
+  if (comment) {
+    formdata.append("comment", comment);
+  }
   var config = {
     method: "post",
     url: url.CREATEBUZZ,
@@ -208,19 +211,23 @@ export const like = async (req, res) => {
     });
 };
 
-export const getProfile = async (res) => {
+export const viewProfile = async (req, res) => {
+  const { username } = req;
+  if (!username) return res.status(400).send("Please enter a username");
+  var formdata = new FormData();
+  formdata.append("username", username);
   var config = {
-    method: "get",
-    url: url.GETPROFILE,
+    method: "post",
+    url: url.VIEWPROFILE,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
     },
+    data: formdata,
   };
   axios(config)
     .then(function (response) {
-      localStorage.setItem("profile", JSON.stringify(response.data));
       if (res) {
         res(response.data);
       }
@@ -233,7 +240,6 @@ export const getProfile = async (res) => {
       return { error: error };
     });
 };
-
 
 export const follow = async (req, res) => {
   const { id } = req;
@@ -289,5 +295,37 @@ export const getFollowing = async (res) => {
         res({ error: error });
       }
       return { error: error };
+    });
+};
+
+export const comments = async (req, res) => {
+  const { id } = req;
+  if (!id) return res.status(400).send("Please enter a id");
+  var formdata = new FormData();
+  formdata.append("parent_id", id);
+  var config = {
+    method: "post",
+    url: url.COMMENTS,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
     });
 };

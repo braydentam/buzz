@@ -5,6 +5,11 @@ import { useParams } from "react-router-dom";
 import { getFollowing } from "../api/requests";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 //TODO: Sort and fix import structure to follow a specific ruleset
+// react, react-dom, react-router
+// antd (the ui library)
+// package/third-party imports, such as lodash.
+// project alias imports
+// relative imports
 
 const Following = () => {
   const [error, setError] = useState("");

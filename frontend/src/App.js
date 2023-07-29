@@ -46,7 +46,7 @@ function App() {
           />
           <Route
             exact
-            path="/profile/:id"
+            path="/profile/:username"
             element={user ? <Profile /> : <Navigate to="/login" />}
           />
         </Routes>

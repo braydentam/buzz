@@ -4,7 +4,8 @@ const Profile = require("../models/profileModel");
 const mongoose = require("mongoose");
 
 const createBuzz = async (req, res) => {
-  const { message } = req.body;
+  const { message, comment } = req.body;
+  console.log(req.body);
   if (!message) {
     return res.status(400).json("Please enter a message");
   }
@@ -13,7 +14,19 @@ const createBuzz = async (req, res) => {
     const user = await User.findById(user_id);
     const name = user.name;
     const username = user.username;
-    const buzz = await Buzz.create({ user_id, name, username, message });
+    console.log(comment);
+    const buzz = await Buzz.create({
+      user_id,
+      name,
+      username,
+      message,
+      comment,
+    });
+
+    if (comment) {
+      const parentBuzz = await Buzz.findById(comment);
+      await parentBuzz.newComment();
+    }
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -22,9 +35,11 @@ const createBuzz = async (req, res) => {
 
 const getAllBuzz = async (req, res) => {
   try {
-    const buzz = await Buzz.find({}).sort({ createdAt: -1 });
+    const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(buzz);
-  } catch {
+  } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
@@ -106,10 +121,32 @@ const getFollowing = async (req, res) => {
   }
   try {
     const userProfile = await Profile.findOne({ user: user_id });
-    const buzz = await Buzz.find({user_id: userProfile.following});
+    const buzz = await Buzz.find({ user_id: userProfile.following });
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-}
-module.exports = { createBuzz, getAllBuzz, getById, getByUser, like, getFollowing };
+};
+
+const comments = async (req, res) => {
+  const { parent_id } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(parent_id)) {
+    return res.status(400).json("Please enter an id");
+  }
+  try {
+    const buzz = await Buzz.find({ comment: parent_id });
+    res.status(200).json(buzz);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  createBuzz,
+  getAllBuzz,
+  getById,
+  getByUser,
+  like,
+  getFollowing,
+  comments,
+};

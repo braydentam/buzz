@@ -1,4 +1,4 @@
-import { createContext, useReducer, useEffect } from "react";
+import { createContext, useReducer } from "react";
 
 export const ProfileContext = createContext();
 
@@ -22,14 +22,14 @@ export const ProfileContextProvider = ({ children }) => {
     profile: null,
   });
 
-  useEffect(() => {
-    const profile = JSON.parse(localStorage.getItem("profile"));
-    if (profile) {
-      dispatch({ type: "SET_PROFILE", payload: profile });
-    }
-  }, []);
+  // useEffect(() => {
+  //   const profile = JSON.parse(localStorage.getItem("profile"));
+  //   if (profile) {
+  //     dispatch({ type: "SET_PROFILE", payload: profile });
+  //   }
+  // }, []);
 
-  console.log("ProfileContext state:", state);
+  // console.log("ProfileContext state:", state);
 
   return (
     <ProfileContext.Provider value={{ ...state, dispatch }}>

@@ -6,6 +6,7 @@ export const buzzReducer = (state, action) => {
   switch (action.type) {
     case 'SET_BUZZ': 
       return {
+        ...state,
         buzz: action.payload
       }
     case 'CREATE_BUZZ':

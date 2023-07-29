@@ -1,13 +1,11 @@
 const Profile = require("../models/profileModel");
 const mongoose = require("mongoose");
 
-const getProfile = async (req, res) => {
-  const user_id = req.user._id;
-  if (!mongoose.Types.ObjectId.isValid(user_id)) {
-    return res.status(400).json("Please enter an id");
-  }
+//TODO: fix all namings (id should be id, etc);
+const viewProfile = async (req, res) => {
+  const { username } = req.body
   try {
-    const userProfile = await Profile.findOne({ user: user_id });
+    const userProfile = await Profile.findOne({ username: username });
     res.status(200).json(userProfile);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -37,7 +35,7 @@ const follow = async (req, res) => {
           new: true,
         }
       );
-      const userProfile = await Profile.find({ user: user_id }).sort({
+      const userProfile = await Profile.find({ user: follow_id }).sort({
         createdAt: -1,
       });
       return res
@@ -58,7 +56,7 @@ const follow = async (req, res) => {
         new: true,
       }
     );
-    const userProfile = await Profile.find({ user: user_id }).sort({
+    const userProfile = await Profile.find({ user: follow_id }).sort({
       createdAt: -1,
     });
     res.status(200).json({ profile: userProfile, action: "followed" });
@@ -67,4 +65,4 @@ const follow = async (req, res) => {
   }
 };
 
-module.exports = { getProfile, follow };
+module.exports = { viewProfile, follow };
