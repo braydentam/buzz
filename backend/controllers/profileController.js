@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 //TODO: fix all namings (id should be id, etc);
 const viewProfile = async (req, res) => {
-  const { username } = req.body
+  const { username } = req.body;
   try {
     const userProfile = await Profile.findOne({ username: username });
     res.status(200).json(userProfile);

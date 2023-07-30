@@ -4,6 +4,7 @@ const {
   getAllBuzz,
   getById,
   getByUser,
+  deleteBuzz,
   like,
   getFollowing,
   comments,
@@ -21,6 +22,8 @@ router.get("/getAll", getAllBuzz);
 router.get("/getById/:id", getById);
 
 router.get("/getByUser/:id", getByUser);
+
+router.delete("/delete", deleteBuzz);
 
 router.post("/like", like);
 

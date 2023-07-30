@@ -34,7 +34,7 @@ const Following = () => {
 
   return (
     <div className="ml-64">
-        {buzz && (
+      {buzz && (
         <>
           <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
             Following
@@ -49,6 +49,7 @@ const Following = () => {
               handleClick(b._id);
             }}
             buzz={b}
+            isComment={false}
           />
         ))}
       {error && <div className="error">{error}</div>}

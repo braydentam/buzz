@@ -17,7 +17,7 @@ const CreateComment = (buzz) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "CREATE_BUZZ", payload: data });
+        dispatch({ type: "CREATE_COMMENT", payload: data });
         setShowModal(false);
       }
     };

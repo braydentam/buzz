@@ -7,7 +7,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const { dispatch } = useAuthContext();
-  
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -15,9 +14,9 @@ const Login = () => {
       password: password,
     };
     const response = (data) => {
-      if(data["error"]){
+      if (data["error"]) {
         setError(data["error"]);
-      }else{
+      } else {
         dispatch({ type: "LOGIN", payload: data });
       }
     };

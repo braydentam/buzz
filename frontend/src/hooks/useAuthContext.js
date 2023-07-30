@@ -1,12 +1,12 @@
-import { AuthContext } from "../context/authContext"
-import { useContext } from "react"
+import { AuthContext } from "../context/authContext";
+import { useContext } from "react";
 
 export const useAuthContext = () => {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
 
-  if(!context) {
-    throw Error('Need AuthContextProvider')
+  if (!context) {
+    throw Error("Need AuthContextProvider");
   }
 
-  return context
-}
+  return context;
+};

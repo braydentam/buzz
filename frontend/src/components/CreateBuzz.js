@@ -8,10 +8,9 @@ const CreateBuzz = () => {
   const [error, setError] = React.useState("");
   const { dispatch } = useBuzzContext();
 
-
   const handleSubmit = async (e) => {
     let reqData = {
-      message: message
+      message: message,
     };
     const response = (data) => {
       if (data["error"]) {
@@ -97,7 +96,6 @@ const CreateBuzz = () => {
           <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
         </>
       ) : null}
-      
     </div>
   );
 };

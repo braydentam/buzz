@@ -16,9 +16,9 @@ const Signup = () => {
       password: password,
     };
     const response = (data) => {
-      if(data["error"]){
+      if (data["error"]) {
         setError(data["error"]);
-      }else{
+      } else {
         dispatch({ type: "LOGIN", payload: data });
       }
     };

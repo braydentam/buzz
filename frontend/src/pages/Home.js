@@ -22,7 +22,7 @@ const Home = () => {
           setError(data["error"].message);
           dispatch({ type: "SET_BUZZ", payload: null });
         } else {
-          dispatch({ type: "SET_BUZZ", payload: data });
+          dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
         }
       }
     };
@@ -49,6 +49,7 @@ const Home = () => {
               handleClick(b._id);
             }}
             buzz={b}
+            isComment={false}
           />
         ))}
       {error && <div className="error">{error}</div>}

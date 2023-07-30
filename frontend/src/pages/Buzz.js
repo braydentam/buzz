@@ -1,8 +1,9 @@
 import { React, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Buzzes from "../components/Buzzes";
+import { useBuzzContext } from "../hooks/useBuzzContext";
 import { getById } from "../api/requests";
-import { like, comments } from "../api/requests";
+import { like, comments, deleteBuzz } from "../api/requests";
 import { useNavigate } from "react-router-dom";
 import CreateComment from "../components/CreateComment";
 //TODO: fix naming for comments vs comment
@@ -13,18 +14,28 @@ const Buzz = () => {
   const [error, setError] = useState("");
   const [buzzID, setBuzzID] = useState("");
   const [buzz, setBuzz] = useState(null);
-  const [comment, setComment] = useState(null);
+  const { comment, dispatch } = useBuzzContext();
+  // const [comment, setComment] = useState(null);
   const [likeStatus, setLikeStatus] = useState("");
   const navigate = useNavigate();
 
   const handleProfile = () => {
-    if (
-      buzz.username === JSON.parse(localStorage.getItem("user"))["username"]
-    ) {
-      navigate("/posts");
-    } else {
-      navigate("/profile/" + buzz.username);
-    }
+    navigate("/profile/" + buzz.username);
+  };
+
+  const handleDelete = async () => {
+    let reqData = {
+      id: buzz._id,
+    };
+    const response = (data) => {
+      if (data["error"]) {
+        setError(data["error"]);
+      } else {
+        dispatch({ type: "DELETE_BUZZ", payload: data });
+        navigate("/");
+      }
+    };
+    await deleteBuzz(reqData, response);
   };
 
   function handleClick(id) {
@@ -51,7 +62,6 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        console.log(data);
         setBuzz(findBuzz(data["buzz"], buzzID));
         setLikeStatus(data["action"]);
       }
@@ -84,11 +94,11 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        setComment(data);
+        dispatch({ type: "SET_COMMENT", payload: data });
       }
     };
     comments(reqData, response);
-  }, [id]);
+  }, [id, dispatch]);
 
   useEffect(() => {
     buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
@@ -155,23 +165,31 @@ const Buzz = () => {
                   </div>
                 </div>
               </button>
-              <div className="flex flex ml-5 p-1 rounded-lg items-center outline outline-offset-0 outline-black-500">
-                <svg
-                  class="svg-icon"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth=".5"
-                  stroke="black"
-                  className="w-7 h-6 mt-1"
-                >
-                  <path d="M17.211,3.39H2.788c-0.22,0-0.4,0.18-0.4,0.4v9.614c0,0.221,0.181,0.402,0.4,0.402h3.206v2.402c0,0.363,0.429,0.533,0.683,0.285l2.72-2.688h7.814c0.221,0,0.401-0.182,0.401-0.402V3.79C17.612,3.569,17.432,3.39,17.211,3.39M16.811,13.004H9.232c-0.106,0-0.206,0.043-0.282,0.117L6.795,15.25v-1.846c0-0.219-0.18-0.4-0.401-0.4H3.189V4.19h13.622V13.004z"></path>
-                </svg>
-                <div className="text-black text-lg ml-15">
-                  {buzz.commentCount}
-                </div>
-              </div>
               <CreateComment buzz={buzz} />
+              {buzz.user_id ===
+                JSON.parse(localStorage.getItem("user"))["id"] && (
+                <button
+                  className="flex flex p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+                  onClick={(e) => {
+                    handleDelete();
+                    e.stopPropagation();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth=".5"
+                    stroke="white"
+                    className="svg-icon w-7 h-6 mt-1"
+                  >
+                    <path d="M17.114,3.923h-4.589V2.427c0-0.252-0.207-0.459-0.46-0.459H7.935c-0.252,0-0.459,0.207-0.459,0.459v1.496h-4.59c-0.252,0-0.459,0.205-0.459,0.459c0,0.252,0.207,0.459,0.459,0.459h1.51v12.732c0,0.252,0.207,0.459,0.459,0.459h10.29c0.254,0,0.459-0.207,0.459-0.459V4.841h1.511c0.252,0,0.459-0.207,0.459-0.459C17.573,4.127,17.366,3.923,17.114,3.923M8.394,2.886h3.214v0.918H8.394V2.886z M14.686,17.114H5.314V4.841h9.372V17.114z M12.525,7.306v7.344c0,0.252-0.207,0.459-0.46,0.459s-0.458-0.207-0.458-0.459V7.306c0-0.254,0.205-0.459,0.458-0.459S12.525,7.051,12.525,7.306M8.394,7.306v7.344c0,0.252-0.207,0.459-0.459,0.459s-0.459-0.207-0.459-0.459V7.306c0-0.254,0.207-0.459,0.459-0.459S8.394,7.051,8.394,7.306"></path>
+                  </svg>
+                  <div className="text-black text-lg text-white ml-15">
+                    Delete
+                  </div>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -179,7 +197,7 @@ const Buzz = () => {
 
       <div className="ml-64">
         {comment != null && comment.length > 0 && (
-          <h1 class="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
             Comments
           </h1>
         )}
@@ -191,6 +209,7 @@ const Buzz = () => {
                 handleClick(b._id);
               }}
               buzz={b}
+              isComment={true}
             />
           ))}
       </div>

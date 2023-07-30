@@ -3,9 +3,10 @@ const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
 const mongoose = require("mongoose");
 
+//TODO: have uniform titling of responses
+
 const createBuzz = async (req, res) => {
   const { message, comment } = req.body;
-  console.log(req.body);
   if (!message) {
     return res.status(400).json("Please enter a message");
   }
@@ -14,7 +15,6 @@ const createBuzz = async (req, res) => {
     const user = await User.findById(user_id);
     const name = user.name;
     const username = user.username;
-    console.log(comment);
     const buzz = await Buzz.create({
       user_id,
       name,
@@ -35,10 +35,12 @@ const createBuzz = async (req, res) => {
 
 const getAllBuzz = async (req, res) => {
   try {
+    const user_id = req.user._id;
     const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
       createdAt: -1,
     });
-    res.status(200).json(buzz);
+    const liked = await Buzz.find({ likes: user_id }).sort({ createdAt: -1 });
+    res.status(200).json({ buzz: buzz, liked: liked });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -60,11 +62,52 @@ const getById = async (req, res) => {
 const getByUser = async (req, res) => {
   const { id } = req.params;
   try {
-    const buzz = await Buzz.find({ username: id }).sort({ createdAt: -1 });
-    res.status(200).json(buzz);
+    const buzz = await Buzz.find({
+      username: id,
+      comment: { $exists: false },
+    }).sort({ createdAt: -1 });
+    const comments = await Buzz.find({
+      username: id,
+      comment: { $exists: true },
+    }).sort({ createdAt: -1 });
+    const user = await User.findOne({ username: id });
+    const liked = await Buzz.find({ likes: user._id }).sort({ createdAt: -1 });
+    res.status(200).json({ buzz: buzz, comments: comments, liked: liked });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
+};
+
+const deleteBuzz = async (req, res) => {
+  const { id } = req.body;
+
+  const user_id = req.user._id;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "No such workout" });
+  }
+  const b = await Buzz.findOne({ _id: id });
+
+  const deleted = await Buzz.findOneAndDelete({ _id: id });
+
+  if (b.comment) {
+    const parentBuzz = await Buzz.findOne({ _id: b.comment });
+    await parentBuzz.newComment();
+  }
+  if (!deleted) {
+    return res.status(400).json({ error: "No such workout" });
+  }
+
+  const buzz = await Buzz.find({
+    comment: { $exists: false },
+  }).sort({ createdAt: -1 });
+  const comments = await Buzz.find({
+    comment: { $exists: true },
+  }).sort({ createdAt: -1 });
+
+  const liked = await Buzz.find({ likes: user_id }).sort({ createdAt: -1 });
+  res
+    .status(200)
+    .json({ delete: deleted, buzz: buzz, comments: comments, liked: liked });
 };
 
 const like = async (req, res) => {
@@ -90,8 +133,19 @@ const like = async (req, res) => {
           new: true,
         }
       );
-      const buzz = await Buzz.find({}).sort({ createdAt: -1 });
-      return res.status(200).json({ buzz: buzz, action: "unliked" });
+      const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
+        createdAt: -1,
+      });
+      const comments = await Buzz.find({ comment: { $exists: true } }).sort({
+        createdAt: -1,
+      });
+      const liked = await Buzz.find({ likes: user_id }).sort({ createdAt: -1 });
+      return res.status(200).json({
+        buzz: buzz,
+        comment: comments,
+        liked: liked,
+        action: "unliked",
+      });
     }
     await Buzz.findOneAndUpdate(
       { _id: id },
@@ -107,8 +161,16 @@ const like = async (req, res) => {
         new: true,
       }
     );
-    const buzz = await Buzz.find({}).sort({ createdAt: -1 });
-    res.status(200).json({ buzz: buzz, action: "liked" });
+    const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
+      createdAt: -1,
+    });
+    const comments = await Buzz.find({ comment: { $exists: true } }).sort({
+      createdAt: -1,
+    });
+    const liked = await Buzz.find({ likes: user_id }).sort({ createdAt: -1 });
+    res
+      .status(200)
+      .json({ buzz: buzz, comment: comments, liked: liked, action: "liked" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -146,6 +208,7 @@ module.exports = {
   getAllBuzz,
   getById,
   getByUser,
+  deleteBuzz,
   like,
   getFollowing,
   comments,

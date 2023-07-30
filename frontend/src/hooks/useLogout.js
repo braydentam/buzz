@@ -8,7 +8,7 @@ export const useLogout = () => {
 
   const logout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("profile")
+    localStorage.removeItem("profile");
     dispatch({ type: "LOGOUT" });
     dispatchBuzz({ type: "SET_BUZZ", payload: null });
     dispatchProfile({ type: "SET_PROFILE", payload: null });

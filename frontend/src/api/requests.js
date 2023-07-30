@@ -329,3 +329,35 @@ export const comments = async (req, res) => {
       return { error: error.response.data.error };
     });
 };
+
+export const deleteBuzz = async (req, res) => {
+  const { id } = req;
+  if (!id) return res.status(400).send("Please enter a id");
+  var formdata = new FormData();
+  formdata.append("id", id);
+  var config = {
+    method: "delete",
+    url: url.DELETE,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
