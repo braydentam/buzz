@@ -183,7 +183,7 @@ const getFollowing = async (req, res) => {
   }
   try {
     const userProfile = await Profile.findOne({ user: user_id });
-    const buzz = await Buzz.find({ user_id: userProfile.following });
+    const buzz = await Buzz.find({ username: userProfile.following });
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -273,10 +273,10 @@ export const follow = async (req, res) => {
     });
 };
 
-export const getFollowing = async (res) => {
+export const getFollowingBuzzes = async (res) => {
   var config = {
     method: "get",
-    url: url.GETFOLLOWING,
+    url: url.GETFOLLOWINGBUZZES,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
@@ -345,6 +345,58 @@ export const deleteBuzz = async (req, res) => {
       }`,
     },
     data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const getFollowers = async (res) => {
+  var config = {
+    method: "get",
+    url: url.GETFOLLOWERS,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const getFollowing = async (res) => {
+  var config = {
+    method: "get",
+    url: url.GETFOLLOWING,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
   };
   axios(config)
     .then(function (response) {

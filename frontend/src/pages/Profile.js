@@ -7,18 +7,21 @@ import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useProfileContext } from "../hooks/useProfileContext";
 import { viewProfile } from "../api/requests";
 import { follow } from "../api/requests";
+import UserModal from "../components/UserModal";
 
 const Profile = () => {
   const [error, setError] = useState("");
   const { buzz, comment, liked, dispatch } = useBuzzContext();
   const { profile, dispatch: dispatchProfile } = useProfileContext();
   const [title, setTitle] = useState("Posts");
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
   const [followStatus, setFollowStatus] = useState("");
   const { username } = useParams();
   const navigate = useNavigate();
 
   function isFollowed(id) {
-    if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
+    if (id === JSON.parse(localStorage.getItem("user"))["username"]) {
       setFollowStatus("followed");
     }
   }
@@ -142,12 +145,22 @@ const Profile = () => {
           </div>
           {profile && (
             <div className="block flex items-center justify-center">
-              <h4 className="pr-5 text-2xl font-bold dark:text-white">
-                Followers: {profile.followers ? profile.followers.length : 0}
-              </h4>
-              <h4 className="text-2xl font-bold dark:text-white">
-                Following: {profile.following ? profile.following.length : 0}
-              </h4>
+              <button onClick={() => setShowFollowers(true)}>
+                <h4 className="pr-5 text-2xl font-bold dark:text-white">
+                  <span className=" hover:text-blue-500 hover:underline">
+                    Followers:
+                  </span>{" "}
+                  {profile.followers ? profile.followers.length : 0}
+                </h4>
+              </button>
+              <button onClick={() => setShowFollowing(true)}>
+                <h4 className="text-2xl font-bold dark:text-white">
+                  <span className=" hover:text-blue-500 hover:underline">
+                    Following:
+                  </span>{" "}
+                  {profile.following ? profile.following.length : 0}
+                </h4>
+              </button>
             </div>
           )}
         </div>
@@ -198,6 +211,18 @@ const Profile = () => {
           />
         ))}
       {error && <div className="error">{error}</div>}
+      <UserModal
+        username={username}
+        type="Following"
+        showModal={showFollowing}
+        setShowModal={setShowFollowing}
+      />
+      <UserModal
+        username={username}
+        type="Followers"
+        showModal={showFollowers}
+        setShowModal={setShowFollowers}
+      />
     </div>
   );
 };

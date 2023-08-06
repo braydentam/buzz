@@ -20,17 +20,18 @@ const follow = async (req, res) => {
   }
   try {
     const profile = await Profile.findOne({ user: user_id });
+    const followProfile = await Profile.findOne({ user: follow_id });
     if (profile.isFollowing(follow_id)) {
       await Profile.findOneAndUpdate(
         { user: user_id },
-        { $pull: { following: follow_id } },
+        { $pull: { following: followProfile.username } },
         {
           new: true,
         }
       );
       await Profile.findOneAndUpdate(
         { user: follow_id },
-        { $pull: { followers: user_id } },
+        { $pull: { followers: profile.username } },
         {
           new: true,
         }
@@ -44,14 +45,14 @@ const follow = async (req, res) => {
     }
     await Profile.findOneAndUpdate(
       { user: user_id },
-      { $push: { following: follow_id } },
+      { $push: { following: followProfile.username } },
       {
         new: true,
       }
     );
     await Profile.findOneAndUpdate(
       { user: follow_id },
-      { $push: { followers: user_id } },
+      { $push: { followers: profile.username } },
       {
         new: true,
       }
@@ -65,4 +66,24 @@ const follow = async (req, res) => {
   }
 };
 
-module.exports = { viewProfile, follow };
+const getFollowing = async (req, res) => {
+  const username = req.user.username;
+  try {
+    const userProfile = await Profile.findOne({ username: username });
+    res.status(200).json(userProfile.following);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+const getFollowers = async (req, res) => {
+  const username = req.user.username;
+  try {
+    const userProfile = await Profile.findOne({ username: username });
+    res.status(200).json(userProfile.followers);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+module.exports = { viewProfile, follow, getFollowing, getFollowers };

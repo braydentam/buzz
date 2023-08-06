@@ -33,5 +33,3 @@ const loginUser = async (req, res) => {
 };
 
 module.exports = { signupUser, loginUser };
-
-//TODO: Stop sending ID back to frontend, remove ID part from frontend

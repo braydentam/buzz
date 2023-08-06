@@ -26,14 +26,12 @@ const profileSchema = new Schema({
   ],
   following: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
   ],
   followers: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
     },
   ],
 });

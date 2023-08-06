@@ -6,8 +6,12 @@ import { useLogout } from "../hooks/useLogout";
 const Navbar = () => {
   const { user } = useAuthContext();
   const { logout } = useLogout();
-  const userURL =
-    "/profile/" + JSON.parse(localStorage.getItem("user"))["username"];
+  var userURL = "";
+  if (localStorage.getItem("user") != null) {
+    userURL =
+      "/profile/" + JSON.parse(localStorage.getItem("user"))["username"];
+  }
+
   const handleClick = () => {
     logout();
   };
@@ -21,7 +25,7 @@ const Navbar = () => {
               <h1 className="text-5xl font-extrabold">Buzz</h1>
             </div>
           </div>
-          {user && (
+          {user && user.username && (
             <React.Fragment>
               <div className="flex items-center justify-center h-14 border-b">
                 <h2 className="text-center text-2xl font-bold text-gray-900">
