@@ -143,7 +143,7 @@ const Buzzes = (buzz) => {
           </div>
           {b.user_id === JSON.parse(localStorage.getItem("user"))["id"] && (
             <button
-              className="flex flex ml-5 p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+              className="flex ml-5 p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
               onClick={(e) => {
                 handleDelete();
                 e.stopPropagation();

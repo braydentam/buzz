@@ -1,12 +1,14 @@
 import axios from "axios";
 import * as url from "./urls";
 
+//TODO: fix the res.status(400) messages
+
 export const login = async (req, res) => {
   const { username, password } = req;
   if (!username || !password)
     return res.status(400).send("Please enter username/password");
   var formdata = new FormData();
-  formdata.append("username", username);
+  formdata.append("username", username.toLowerCase());
   formdata.append("password", password);
   var config = {
     method: "post",
@@ -39,7 +41,7 @@ export const signup = async (req, res) => {
     return res.status(400).send("Please enter name/username/password");
   var formdata = new FormData();
   formdata.append("name", name);
-  formdata.append("username", username);
+  formdata.append("username", username.toLowerCase());
   formdata.append("password", password);
   var config = {
     method: "post",
@@ -362,15 +364,21 @@ export const deleteBuzz = async (req, res) => {
     });
 };
 
-export const getFollowers = async (res) => {
+export const viewFollowers = async (req, res) => {
+  const { username } = req;
+  if (!username) return res.status(400).send("Please enter a username");
+  var formdata = new FormData();
+  formdata.append("username", username);
   var config = {
-    method: "get",
-    url: url.GETFOLLOWERS,
+    method: "post",
+    url: url.VIEWFOLLOWERS,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
+      "Content-Type": "multipart/form-data",
     },
+    data: formdata,
   };
   axios(config)
     .then(function (response) {
@@ -388,15 +396,56 @@ export const getFollowers = async (res) => {
     });
 };
 
-export const getFollowing = async (res) => {
+export const viewFollowing = async (req, res) => {
+  const { username } = req;
+  if (!username) return res.status(400).send("Please enter a username");
+  var formdata = new FormData();
+  formdata.append("username", username);
   var config = {
-    method: "get",
-    url: url.GETFOLLOWING,
+    method: "post",
+    url: url.VIEWFOLLOWING,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
+      "Content-Type": "multipart/form-data",
     },
+    data: formdata,
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log(error.response.data.error);
+      if (res) {
+        res({ error: error.response.data.error });
+      }
+      return { error: error.response.data.error };
+    });
+};
+
+export const search = async (req, res) => {
+  const { key } = req;
+  if (!key) {
+    res({ error: "Please enter a search key" });
+    return { error: "Please enter a search key" };
+  }
+  var formdata = new FormData();
+  formdata.append("key", key.toLowerCase());
+  var config = {
+    method: "post",
+    url: url.SEARCH,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+      "Content-Type": "multipart/form-data",
+    },
+    data: formdata,
   };
   axios(config)
     .then(function (response) {

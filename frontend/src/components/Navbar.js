@@ -1,11 +1,14 @@
-import React from "react";
+import { React, useState, Fragment } from "react";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
+import SearchModal from "../components/SearchModal";
 
 const Navbar = () => {
   const { user } = useAuthContext();
   const { logout } = useLogout();
+  const [showModal, setShowModal] = useState(false);
+  const [key, setKey] = useState("");
   var userURL = "";
   if (localStorage.getItem("user") != null) {
     userURL =
@@ -26,19 +29,19 @@ const Navbar = () => {
             </div>
           </div>
           {user && user.username && (
-            <React.Fragment>
+            <Fragment>
               <div className="flex items-center justify-center h-14 border-b">
                 <h2 className="text-center text-2xl font-bold text-gray-900">
                   Logged in as: {user.username}
                 </h2>
               </div>
-            </React.Fragment>
+            </Fragment>
           )}
 
           <div className="overflow-y-auto overflow-x-hidden flex-grow">
             <ul className="flex flex-col py-4 space-y-1">
               {user && (
-                <React.Fragment>
+                <Fragment>
                   <li className="px-5">
                     <div className="flex flex-row items-center h-8">
                       <div className="text-sm font-light tracking-wide text-gray-500">
@@ -94,16 +97,45 @@ const Navbar = () => {
                         <span className="ml-2 text-sm tracking-wide truncate">
                           Following
                         </span>
-                        <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
+                        {/* <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">
                           1.2k
-                        </span>
+                        </span> */}
                       </span>
                     </li>
                   </Link>
+                  <li>
+                    <div className="pl-5 inline-flex justify-center items-center ">
+                      <input
+                        type="text"
+                        id="small-input"
+                        onChange={(e) => setKey(e.target.value)}
+                        className="block w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search Profile"
+                      ></input>
+                      <span className="ml-4">
+                        <button
+                          className="flex p-1 rounded-lg items-center outline outline-offset-0 bg-blue-400"
+                          onClick={() => {
+                            setShowModal(true);
+                          }}
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path d="M18.125,15.804l-4.038-4.037c0.675-1.079,1.012-2.308,1.01-3.534C15.089,4.62,12.199,1.75,8.584,1.75C4.815,1.75,1.982,4.726,2,8.286c0.021,3.577,2.908,6.549,6.578,6.549c1.241,0,2.417-0.347,3.44-0.985l4.032,4.026c0.167,0.166,0.43,0.166,0.596,0l1.479-1.478C18.292,16.234,18.292,15.968,18.125,15.804 M8.578,13.99c-3.198,0-5.716-2.593-5.733-5.71c-0.017-3.084,2.438-5.686,5.74-5.686c3.197,0,5.625,2.493,5.64,5.624C14.242,11.548,11.621,13.99,8.578,13.99 M16.349,16.981l-3.637-3.635c0.131-0.11,0.721-0.695,0.876-0.884l3.642,3.639L16.349,16.981z"></path>
+                          </svg>
+                        </button>
+                      </span>
+                    </div>
+                  </li>
                   <li className="px-5">
                     <div className="flex flex-row items-center h-8">
                       <div className="text-sm font-light tracking-wide text-gray-500">
-                        Settings
+                        Profile
                       </div>
                     </div>
                   </li>
@@ -132,7 +164,7 @@ const Navbar = () => {
                       </span>
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
                       <span className="inline-flex justify-center items-center ml-4">
                         <svg
@@ -160,7 +192,7 @@ const Navbar = () => {
                         Settings
                       </span>
                     </span>
-                  </li>
+                  </li> */}
                   <li>
                     <button
                       onClick={() => {
@@ -191,10 +223,15 @@ const Navbar = () => {
                       </span>
                     </button>
                   </li>
-                </React.Fragment>
+                  <SearchModal
+                    props={key}
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                  />
+                </Fragment>
               )}
               {!user && (
-                <React.Fragment>
+                <Fragment>
                   <li className="px-5">
                     <div className="flex flex-row items-center h-8">
                       <div className="text-sm font-light tracking-wide text-gray-500">
@@ -222,7 +259,7 @@ const Navbar = () => {
                       </span>
                     </li>
                   </Link>
-                </React.Fragment>
+                </Fragment>
               )}
             </ul>
           </div>

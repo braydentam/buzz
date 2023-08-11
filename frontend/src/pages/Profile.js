@@ -147,7 +147,7 @@ const Profile = () => {
             <div className="block flex items-center justify-center">
               <button onClick={() => setShowFollowers(true)}>
                 <h4 className="pr-5 text-2xl font-bold dark:text-white">
-                  <span className=" hover:text-blue-500 hover:underline">
+                  <span className="hover:text-blue-500 hover:underline">
                     Followers:
                   </span>{" "}
                   {profile.followers ? profile.followers.length : 0}
@@ -155,7 +155,7 @@ const Profile = () => {
               </button>
               <button onClick={() => setShowFollowing(true)}>
                 <h4 className="text-2xl font-bold dark:text-white">
-                  <span className=" hover:text-blue-500 hover:underline">
+                  <span className="hover:text-blue-500 hover:underline">
                     Following:
                   </span>{" "}
                   {profile.following ? profile.following.length : 0}

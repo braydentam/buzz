@@ -1,22 +1,22 @@
 import { React, useEffect, useState } from "react";
-import { viewFollowers, viewFollowing } from "../api/requests";
+import { search } from "../api/requests";
 import { useNavigate } from "react-router-dom";
 
-const UserModal = (user) => {
+const SearchModal = (props) => {
   const [userList, setUserList] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleClick = (name) => {
-    user.setShowModal(false);
+    props.setShowModal(false);
     navigate("/profile/" + name);
   };
 
   useEffect(() => {
     let reqData = {
-      username: user.username,
+      key: props.props,
     };
-    if (user.showModal) {
+    if (props.showModal) {
       const response = (data) => {
         if (data["error"]) {
           setError(data["error"]);
@@ -25,24 +25,20 @@ const UserModal = (user) => {
           setError("");
         }
       };
-      if (user.type === "Followers") {
-        viewFollowers(reqData, response);
-      } else {
-        viewFollowing(reqData, response);
-      }
+      search(reqData, response);
     }
-  }, [user, user.username]);
+  }, [props, props.key]);
 
   return (
     <div>
-      {user.showModal ? (
+      {props.showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-1/2 bg-white outline-none focus:outline-none">
               <button
                 type="button"
                 onClick={() => {
-                  user.setShowModal(false);
+                  props.setShowModal(false);
                 }}
                 className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
               >
@@ -65,19 +61,19 @@ const UserModal = (user) => {
               </button>
               <div className="px-6 py-6 lg:px-8">
                 <h3 className="mb-4 text-xl font-medium text-gray-900">
-                  {user.type}
+                  Search Results
                 </h3>
                 <ul className="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
                   {userList &&
                     userList.map((u) => (
                       <li
-                        key={u}
+                        key={u.username}
                         onClick={() => {
-                          handleClick(u);
+                          handleClick(u.username);
                         }}
                         className="hover:text-blue-500 hover:underline"
                       >
-                        {u}
+                        {u.username}
                       </li>
                     ))}
                 </ul>
@@ -92,4 +88,4 @@ const UserModal = (user) => {
   );
 };
 
-export default UserModal;
+export default SearchModal;

@@ -66,8 +66,8 @@ const follow = async (req, res) => {
   }
 };
 
-const getFollowing = async (req, res) => {
-  const username = req.user.username;
+const viewFollowing = async (req, res) => {
+  const { username } = req.body;
   try {
     const userProfile = await Profile.findOne({ username: username });
     res.status(200).json(userProfile.following);
@@ -76,8 +76,8 @@ const getFollowing = async (req, res) => {
   }
 };
 
-const getFollowers = async (req, res) => {
-  const username = req.user.username;
+const viewFollowers = async (req, res) => {
+  const { username } = req.body;
   try {
     const userProfile = await Profile.findOne({ username: username });
     res.status(200).json(userProfile.followers);
@@ -86,4 +86,19 @@ const getFollowers = async (req, res) => {
   }
 };
 
-module.exports = { viewProfile, follow, getFollowing, getFollowers };
+const search = async (req, res) => {
+  const { key } = req.body;
+  if (!key) res.status(400).json({ error: "No Search Key" });
+  try {
+    let data = await Profile.find(
+      {
+        $or: [{ username: { $regex: key } }],
+      },
+      "username"
+    );
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+module.exports = { viewProfile, follow, viewFollowing, viewFollowers, search };
