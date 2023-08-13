@@ -13,53 +13,45 @@ const viewProfile = async (req, res) => {
 };
 
 const follow = async (req, res) => {
-  const { follow_id } = req.body;
+  const { follow_username } = req.body;
   const user_id = req.user._id;
-  if (!mongoose.Types.ObjectId.isValid(follow_id)) {
-    return res.status(400).json("Please enter an id");
-  }
   try {
     const profile = await Profile.findOne({ user: user_id });
-    const followProfile = await Profile.findOne({ user: follow_id });
-    if (profile.isFollowing(follow_id)) {
+    if (profile.isFollowing(follow_username)) {
       await Profile.findOneAndUpdate(
         { user: user_id },
-        { $pull: { following: followProfile.username } },
+        { $pull: { following: follow_username } },
         {
           new: true,
         }
       );
       await Profile.findOneAndUpdate(
-        { user: follow_id },
+        { username: follow_username },
         { $pull: { followers: profile.username } },
         {
           new: true,
         }
       );
-      const userProfile = await Profile.find({ user: follow_id }).sort({
-        createdAt: -1,
-      });
+      const userProfile = await Profile.findOne({ username: follow_username });
       return res
         .status(200)
         .json({ profile: userProfile, action: "unfollowed" });
     }
     await Profile.findOneAndUpdate(
       { user: user_id },
-      { $push: { following: followProfile.username } },
+      { $push: { following: follow_username } },
       {
         new: true,
       }
     );
     await Profile.findOneAndUpdate(
-      { user: follow_id },
+      { username: follow_username },
       { $push: { followers: profile.username } },
       {
         new: true,
       }
     );
-    const userProfile = await Profile.find({ user: follow_id }).sort({
-      createdAt: -1,
-    });
+    const userProfile = await Profile.findOne({ username: follow_username });
     res.status(200).json({ profile: userProfile, action: "followed" });
   } catch (error) {
     res.status(400).json({ error: error.message });

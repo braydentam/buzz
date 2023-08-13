@@ -77,6 +77,9 @@ const SearchModal = (props) => {
                       </li>
                     ))}
                 </ul>
+                {userList && userList.length === 0 ? (
+                  <div>No Results Found</div>
+                ) : null}
                 {error && <div className="error">{error}</div>}
               </div>
             </div>

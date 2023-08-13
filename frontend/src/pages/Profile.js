@@ -50,6 +50,7 @@ const Profile = () => {
         dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
         dispatch({ type: "SET_COMMENT", payload: data["comments"] });
         dispatch({ type: "SET_LIKED", payload: data["liked"] });
+        setError("");
       }
     };
     getByUser(reqData, response);
@@ -65,6 +66,7 @@ const Profile = () => {
         setError(data["error"].message);
       } else {
         dispatchProfile({ type: "SET_PROFILE", payload: data });
+        setError("");
       }
     };
     viewProfile(reqData, response);
@@ -72,16 +74,18 @@ const Profile = () => {
 
   const handleFollow = async () => {
     let reqData = {
-      id: profile.user,
+      username: profile.username,
     };
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "SET_PROFILE", payload: data["profile"][0] });
+        dispatchProfile({ type: "SET_PROFILE", payload: data["profile"] });
         setFollowStatus(data["action"]);
+        setError("");
       }
     };
+    console.log(reqData);
     await follow(reqData, response);
   };
 

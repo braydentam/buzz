@@ -1,12 +1,13 @@
-import React from "react";
+import { React, useEffect, useState } from "react";
 import { useBuzzContext } from "../hooks/useBuzzContext";
-import { createBuzz } from "../api/requests";
+import { createBuzz, hasPosted } from "../api/requests";
 
 const CreateBuzz = () => {
-  const [showModal, setShowModal] = React.useState(false);
-  const [message, setMessage] = React.useState("");
-  const [error, setError] = React.useState("");
-  const { dispatch } = useBuzzContext();
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [posted, setPosted] = useState(false);
+  const { buzz, dispatch } = useBuzzContext();
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -18,11 +19,26 @@ const CreateBuzz = () => {
       } else {
         dispatch({ type: "CREATE_BUZZ", payload: data });
         setShowModal(false);
+        setError("");
       }
     };
     e.preventDefault();
     await createBuzz(reqData, response);
   };
+
+  useEffect(() => {
+    setError("");
+    const response = (data) => {
+      if (data["error"]) {
+        setError(data["error"].message);
+      } else {
+        setPosted(data);
+        console.log(data);
+        setError("");
+      }
+    };
+    hasPosted(response);
+  }, [buzz]);
 
   return (
     <div>
@@ -33,7 +49,7 @@ const CreateBuzz = () => {
       >
         Create Buzz
       </button>
-      {showModal ? (
+      {showModal && posted ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-1/2 bg-white outline-none focus:outline-none">
@@ -61,7 +77,44 @@ const CreateBuzz = () => {
               </button>
               <div className="px-6 py-6 lg:px-8">
                 <h3 className="mb-4 text-xl font-medium text-gray-900">
-                  What's the BUZZ?
+                  Already Posted Today
+                </h3>
+                {error && <div className="error">{error}</div>}
+              </div>
+            </div>
+          </div>
+          <div className="opacity-25 fixed inset-0 z-40 bg-black"></div>
+        </>
+      ) : null}
+      {showModal && !posted ? (
+        <>
+          <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-1/2 bg-white outline-none focus:outline-none">
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+              <div className="px-6 py-6 lg:px-8">
+                <h3 className="mb-4 text-xl font-medium text-gray-900">
+                  What's the BUZZ? (One per day)
                 </h3>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                   <div>

@@ -87,12 +87,13 @@ const deleteBuzz = async (req, res) => {
   }
   const b = await Buzz.findOne({ _id: id });
 
-  const deleted = await Buzz.findOneAndDelete({ _id: id });
-
   if (b.comment) {
     const parentBuzz = await Buzz.findOne({ _id: b.comment });
     await parentBuzz.newComment();
   }
+  
+  const deleted = await Buzz.findOneAndDelete({ _id: id });
+
   if (!deleted) {
     return res.status(400).json({ error: "No such workout" });
   }
@@ -203,6 +204,25 @@ const comments = async (req, res) => {
   }
 };
 
+const hasPosted = async (req, res) => {
+  const user_id = req.user._id;
+  if (!mongoose.Types.ObjectId.isValid(user_id)) {
+    return res.status(400).json("Please enter an id");
+  }
+  try {
+    const buzz = await Buzz.findOne({
+      user_id: user_id,
+      comment: { $exists: false },
+    }).sort({ _id: -1 });
+    let date = new Date().toISOString().substring(0, 10);
+    res
+      .status(200)
+      .json(date === buzz.createdAt.toISOString().substring(0, 10));
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 module.exports = {
   createBuzz,
   getAllBuzz,
@@ -212,4 +232,5 @@ module.exports = {
   like,
   getFollowing,
   comments,
+  hasPosted,
 };

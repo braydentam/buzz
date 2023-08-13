@@ -19,6 +19,7 @@ const CreateComment = (buzz) => {
       } else {
         dispatch({ type: "CREATE_COMMENT", payload: data });
         setShowModal(false);
+        setError("")
       }
     };
     e.preventDefault();

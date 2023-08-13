@@ -20,6 +20,7 @@ const Signup = () => {
         setError(data["error"]);
       } else {
         dispatch({ type: "LOGIN", payload: data });
+        setError("");
       }
     };
     e.preventDefault();

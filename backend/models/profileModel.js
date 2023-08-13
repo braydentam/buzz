@@ -42,8 +42,8 @@ profileSchema.methods.hasLiked = function (buzzId) {
   return this.likes.some((id) => id.equals(buzzId));
 };
 
-profileSchema.methods.isFollowing = function (followId) {
-  return this.following.some((id) => id.equals(followId));
+profileSchema.methods.isFollowing = function (username) {
+  return this.following.some((id) => id === username);
 };
 
 module.exports = mongoose.model("Profile", profileSchema);

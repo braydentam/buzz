@@ -27,7 +27,7 @@ export const login = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -60,7 +60,7 @@ export const signup = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -173,7 +173,7 @@ export const createBuzz = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -205,7 +205,7 @@ export const like = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -244,10 +244,10 @@ export const viewProfile = async (req, res) => {
 };
 
 export const follow = async (req, res) => {
-  const { id } = req;
-  if (!id) return res.status(400).send("Please enter a id");
+  const { username } = req;
+  if (!username) return res.status(400).send("Please enter a username");
   var formdata = new FormData();
-  formdata.append("follow_id", id);
+  formdata.append("follow_username", username);
   var config = {
     method: "post",
     url: url.FOLLOW,
@@ -267,7 +267,7 @@ export const follow = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -324,7 +324,7 @@ export const comments = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -356,7 +356,7 @@ export const deleteBuzz = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -388,7 +388,7 @@ export const viewFollowers = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -420,7 +420,7 @@ export const viewFollowing = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
@@ -455,10 +455,35 @@ export const search = async (req, res) => {
       return response.data;
     })
     .catch(function (error) {
-      console.log(error.response.data.error);
+      console.log(error);
       if (res) {
         res({ error: error.response.data.error });
       }
       return { error: error.response.data.error };
+    });
+};
+
+export const hasPosted = async (res) => {
+  var config = {
+    method: "get",
+    url: url.HASPOSTED,
+    headers: {
+      Authorization: `Bearer ${
+        JSON.parse(localStorage.getItem("user"))["token"]
+      }`,
+    },
+  };
+  axios(config)
+    .then(function (response) {
+      if (res) {
+        res(response.data);
+      }
+      return response.data;
+    })
+    .catch(function (error) {
+      if (res) {
+        res({ error: error });
+      }
+      return { error: error };
     });
 };

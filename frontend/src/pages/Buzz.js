@@ -33,6 +33,7 @@ const Buzz = () => {
       } else {
         dispatch({ type: "DELETE_BUZZ", payload: data });
         navigate("/");
+        setError("")
       }
     };
     await deleteBuzz(reqData, response);
@@ -64,6 +65,7 @@ const Buzz = () => {
       } else {
         setBuzz(findBuzz(data["buzz"], buzzID));
         setLikeStatus(data["action"]);
+        setError("")
       }
     };
     await like(reqData, response);
@@ -79,6 +81,7 @@ const Buzz = () => {
         setError(data["error"]);
       } else {
         setBuzz(data);
+        setError("")
       }
     };
     setBuzzID(id);
@@ -95,6 +98,7 @@ const Buzz = () => {
         setError(data["error"]);
       } else {
         dispatch({ type: "SET_COMMENT", payload: data });
+        setError("")
       }
     };
     comments(reqData, response);

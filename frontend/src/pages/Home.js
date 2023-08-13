@@ -24,11 +24,12 @@ const Home = () => {
           if (data["error"]) {
             setError(data["error"].message);
             dispatch({ type: "SET_BUZZ", payload: null });
-            if (data["error"].response.status === 401) {
+            if (data["error"].response && data["error"].response.status === 401) {
               logout();
             }
           } else {
             dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
+            setError("")
           }
         }
       };

@@ -8,6 +8,7 @@ const {
   like,
   getFollowing,
   comments,
+  hasPosted,
 } = require("../controllers/buzzController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -30,5 +31,7 @@ router.post("/like", like);
 router.get("/getFollowing", getFollowing);
 
 router.post("/comments", comments);
+
+router.get("/hasPosted", hasPosted);
 
 module.exports = router;

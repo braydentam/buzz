@@ -53,14 +53,16 @@ const Buzzes = (buzz) => {
           dispatch({ type: "DELETE_COMMENT", payload: data["delete"] });
           dispatch({ type: "SET_COMMENT", payload: data["comments"] });
           dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("")
         } else if (buzz.isLike) {
           dispatch({ type: "DELETE_LIKE", payload: data["delete"] });
           dispatch({ type: "SET_LIKED", payload: data["liked"] });
           dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("")
         } else {
-          console.log(data);
           dispatch({ type: "DELETE_BUZZ", payload: data["delete"] });
           dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("")
         }
       }
     };
