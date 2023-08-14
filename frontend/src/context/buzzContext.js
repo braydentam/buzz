@@ -33,7 +33,6 @@ export const buzzReducer = (state, action) => {
         ...state,
         liked: [action.payload, ...state.liked],
       };
-
     case "DELETE_BUZZ":
       return {
         buzz: state.buzz.filter((b) => b._id !== action.payload._id),

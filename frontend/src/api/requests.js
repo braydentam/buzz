@@ -119,11 +119,11 @@ export const getById = async (req, res) => {
     });
 };
 
-export const getByUser = async (req, res) => {
-  const { id } = req;
+export const getByUsername = async (req, res) => {
+  const { username } = req;
   var config = {
     method: "get",
-    url: url.GETBYUSER + "/" + id,
+    url: url.GETBYUSERNAME + "/" + username,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
@@ -182,10 +182,10 @@ export const createBuzz = async (req, res) => {
 };
 
 export const like = async (req, res) => {
-  const { id } = req;
-  if (!id) return res.status(400).send("Please enter a id");
+  const { likeID } = req;
+  if (!likeID) return res.status(400).send("Please enter a id");
   var formdata = new FormData();
-  formdata.append("id", id);
+  formdata.append("likeID", likeID);
   var config = {
     method: "post",
     url: url.LIKE,
@@ -213,20 +213,16 @@ export const like = async (req, res) => {
     });
 };
 
-export const viewProfile = async (req, res) => {
+export const getProfile = async (req, res) => {
   const { username } = req;
-  if (!username) return res.status(400).send("Please enter a username");
-  var formdata = new FormData();
-  formdata.append("username", username);
   var config = {
-    method: "post",
-    url: url.VIEWPROFILE,
+    method: "get",
+    url: url.GETPROFILE + "/" + username,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
     },
-    data: formdata,
   };
   axios(config)
     .then(function (response) {
@@ -244,10 +240,10 @@ export const viewProfile = async (req, res) => {
 };
 
 export const follow = async (req, res) => {
-  const { username } = req;
-  if (!username) return res.status(400).send("Please enter a username");
+  const { followUsername } = req;
+  if (!followUsername) return res.status(400).send("Please enter a username");
   var formdata = new FormData();
-  formdata.append("follow_username", username);
+  formdata.append("followUsername", followUsername);
   var config = {
     method: "post",
     url: url.FOLLOW,
@@ -300,21 +296,17 @@ export const getFollowingBuzzes = async (res) => {
     });
 };
 
-export const comments = async (req, res) => {
-  const { id } = req;
-  if (!id) return res.status(400).send("Please enter a id");
-  var formdata = new FormData();
-  formdata.append("parent_id", id);
+export const getComments = async (req, res) => {
+  const { parentID } = req;
+  if (!parentID) return res.status(400).send("Please enter a id");
   var config = {
-    method: "post",
-    url: url.COMMENTS,
+    method: "get",
+    url: url.GETCOMMENTS + "/" + parentID,
     headers: {
-      "Content-Type": "multipart/form-data",
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
     },
-    data: formdata,
   };
   axios(config)
     .then(function (response) {
@@ -333,10 +325,10 @@ export const comments = async (req, res) => {
 };
 
 export const deleteBuzz = async (req, res) => {
-  const { id } = req;
-  if (!id) return res.status(400).send("Please enter a id");
+  const { deleteID } = req;
+  if (!deleteID) return res.status(400).send("Please enter a id");
   var formdata = new FormData();
-  formdata.append("id", id);
+  formdata.append("deleteID", deleteID);
   var config = {
     method: "delete",
     url: url.DELETE,
@@ -364,21 +356,17 @@ export const deleteBuzz = async (req, res) => {
     });
 };
 
-export const viewFollowers = async (req, res) => {
+export const getFollowers = async (req, res) => {
   const { username } = req;
-  if (!username) return res.status(400).send("Please enter a username");
-  var formdata = new FormData();
-  formdata.append("username", username);
   var config = {
-    method: "post",
-    url: url.VIEWFOLLOWERS,
+    method: "get",
+    url: url.GETFOLLOWERS + "/" + username,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
       "Content-Type": "multipart/form-data",
     },
-    data: formdata,
   };
   axios(config)
     .then(function (response) {
@@ -396,21 +384,17 @@ export const viewFollowers = async (req, res) => {
     });
 };
 
-export const viewFollowing = async (req, res) => {
+export const getFollowing = async (req, res) => {
   const { username } = req;
-  if (!username) return res.status(400).send("Please enter a username");
-  var formdata = new FormData();
-  formdata.append("username", username);
   var config = {
-    method: "post",
-    url: url.VIEWFOLLOWING,
+    method: "get",
+    url: url.GETFOLLOWING + "/" + username,
     headers: {
       Authorization: `Bearer ${
         JSON.parse(localStorage.getItem("user"))["token"]
       }`,
       "Content-Type": "multipart/form-data",
     },
-    data: formdata,
   };
   axios(config)
     .then(function (response) {
@@ -429,13 +413,13 @@ export const viewFollowing = async (req, res) => {
 };
 
 export const search = async (req, res) => {
-  const { key } = req;
-  if (!key) {
-    res({ error: "Please enter a search key" });
-    return { error: "Please enter a search key" };
+  const { query } = req;
+  if (!query) {
+    res({ error: "Please enter a search query" });
+    return { error: "Please enter a search query" };
   }
   var formdata = new FormData();
-  formdata.append("key", key.toLowerCase());
+  formdata.append("query", query.toLowerCase());
   var config = {
     method: "post",
     url: url.SEARCH,

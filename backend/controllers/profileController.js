@@ -2,89 +2,89 @@ const Profile = require("../models/profileModel");
 const mongoose = require("mongoose");
 
 //TODO: fix all namings (id should be id, etc);
-const viewProfile = async (req, res) => {
-  const { username } = req.body;
+const getProfile = async (req, res) => {
+  const { username } = req.params;
   try {
-    const userProfile = await Profile.findOne({ username: username });
-    res.status(200).json(userProfile);
+    const profile = await Profile.findOne({ username: username });
+    res.status(200).json(profile);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 const follow = async (req, res) => {
-  const { follow_username } = req.body;
-  const user_id = req.user._id;
+  const { followUsername } = req.body;
+  const userID = req.user._id;
   try {
-    const profile = await Profile.findOne({ user: user_id });
-    if (profile.isFollowing(follow_username)) {
+    const userProfile = await Profile.findOne({ user: userID });
+    if (userProfile.isFollowing(followUsername)) {
       await Profile.findOneAndUpdate(
-        { user: user_id },
-        { $pull: { following: follow_username } },
+        { user: userID },
+        { $pull: { following: followUsername } },
         {
           new: true,
         }
       );
       await Profile.findOneAndUpdate(
-        { username: follow_username },
-        { $pull: { followers: profile.username } },
+        { username: followUsername },
+        { $pull: { followers: userProfile.username } },
         {
           new: true,
         }
       );
-      const userProfile = await Profile.findOne({ username: follow_username });
+      const followProfile = await Profile.findOne({ username: followUsername });
       return res
         .status(200)
-        .json({ profile: userProfile, action: "unfollowed" });
+        .json({ profile: followProfile, action: "unfollowed" });
     }
     await Profile.findOneAndUpdate(
-      { user: user_id },
-      { $push: { following: follow_username } },
+      { user: userID },
+      { $push: { following: followUsername } },
       {
         new: true,
       }
     );
     await Profile.findOneAndUpdate(
-      { username: follow_username },
-      { $push: { followers: profile.username } },
+      { username: followUsername },
+      { $push: { followers: userProfile.username } },
       {
         new: true,
       }
     );
-    const userProfile = await Profile.findOne({ username: follow_username });
-    res.status(200).json({ profile: userProfile, action: "followed" });
+    const followProfile = await Profile.findOne({ username: followUsername });
+    res.status(200).json({ profile: followProfile, action: "followed" });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-const viewFollowing = async (req, res) => {
-  const { username } = req.body;
+const getFollowing = async (req, res) => {
+  const { username } = req.params;
   try {
-    const userProfile = await Profile.findOne({ username: username });
-    res.status(200).json(userProfile.following);
+    const profile = await Profile.findOne({ username: username });
+    res.status(200).json(profile.following);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
-const viewFollowers = async (req, res) => {
-  const { username } = req.body;
+const getFollowers = async (req, res) => {
+  const { username } = req.params;
   try {
-    const userProfile = await Profile.findOne({ username: username });
-    res.status(200).json(userProfile.followers);
+    const profile = await Profile.findOne({ username: username });
+    res.status(200).json(profile.followers);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
 };
 
 const search = async (req, res) => {
-  const { key } = req.body;
-  if (!key) res.status(400).json({ error: "No Search Key" });
+  const { query } = req.body;
+  if (!query) res.status(400).json({ error: "No Search Key" });
   try {
     let data = await Profile.find(
       {
-        $or: [{ username: { $regex: key } }],
+        $or: [{ username: { $regex: query } }],
       },
       "username"
     );
@@ -93,4 +93,4 @@ const search = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-module.exports = { viewProfile, follow, viewFollowing, viewFollowers, search };
+module.exports = { getProfile, follow, getFollowing, getFollowers, search };

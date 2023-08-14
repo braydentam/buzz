@@ -7,7 +7,7 @@ const CreateBuzz = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [posted, setPosted] = useState(false);
-  const { buzz, dispatch } = useBuzzContext();
+  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -17,7 +17,7 @@ const CreateBuzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "CREATE_BUZZ", payload: data });
+        dispatchBuzz({ type: "CREATE_BUZZ", payload: data });
         setShowModal(false);
         setError("");
       }

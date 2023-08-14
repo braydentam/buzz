@@ -1,13 +1,13 @@
 const express = require("express");
 const {
   createBuzz,
-  getAllBuzz,
+  getAll,
   getById,
-  getByUser,
+  getByUsername,
   deleteBuzz,
-  like,
+  likeBuzz,
   getFollowing,
-  comments,
+  getComments,
   hasPosted,
 } = require("../controllers/buzzController");
 const requireAuth = require("../middleware/requireAuth");
@@ -18,19 +18,19 @@ router.use(requireAuth);
 
 router.post("/create", createBuzz);
 
-router.get("/getAll", getAllBuzz);
+router.get("/getAll", getAll);
 
 router.get("/getById/:id", getById);
 
-router.get("/getByUser/:id", getByUser);
+router.get("/getByUsername/:username", getByUsername);
 
 router.delete("/delete", deleteBuzz);
 
-router.post("/like", like);
+router.post("/like", likeBuzz);
 
 router.get("/getFollowing", getFollowing);
 
-router.post("/comments", comments);
+router.get("/getComments/:parentID", getComments);
 
 router.get("/hasPosted", hasPosted);
 

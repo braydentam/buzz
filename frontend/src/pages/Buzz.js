@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import Buzzes from "../components/Buzzes";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { getById } from "../api/requests";
-import { like, comments, deleteBuzz } from "../api/requests";
+import { like, getComments, deleteBuzz } from "../api/requests";
 import { useNavigate } from "react-router-dom";
 import CreateComment from "../components/CreateComment";
 //TODO: fix naming for comments vs comment
@@ -14,8 +14,7 @@ const Buzz = () => {
   const [error, setError] = useState("");
   const [buzzID, setBuzzID] = useState("");
   const [buzz, setBuzz] = useState(null);
-  const { comment, dispatch } = useBuzzContext();
-  // const [comment, setComment] = useState(null);
+  const { comment, dispatch: dispatchBuzz } = useBuzzContext();
   const [likeStatus, setLikeStatus] = useState("");
   const navigate = useNavigate();
 
@@ -25,15 +24,15 @@ const Buzz = () => {
 
   const handleDelete = async () => {
     let reqData = {
-      id: buzz._id,
+      deleteID: buzz._id,
     };
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "DELETE_BUZZ", payload: data });
+        dispatchBuzz({ type: "DELETE_BUZZ", payload: data });
         navigate("/");
-        setError("")
+        setError("");
       }
     };
     await deleteBuzz(reqData, response);
@@ -57,7 +56,7 @@ const Buzz = () => {
 
   const handleLike = async () => {
     let reqData = {
-      id: buzz._id,
+      likeID: buzz._id,
     };
     const response = (data) => {
       if (data["error"]) {
@@ -65,7 +64,7 @@ const Buzz = () => {
       } else {
         setBuzz(findBuzz(data["buzz"], buzzID));
         setLikeStatus(data["action"]);
-        setError("")
+        setError("");
       }
     };
     await like(reqData, response);
@@ -75,13 +74,12 @@ const Buzz = () => {
     let reqData = {
       id: id,
     };
-    setError("");
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
         setBuzz(data);
-        setError("")
+        setError("");
       }
     };
     setBuzzID(id);
@@ -90,19 +88,18 @@ const Buzz = () => {
 
   useEffect(() => {
     let reqData = {
-      id: id,
+      parentID: id,
     };
-    setError("");
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "SET_COMMENT", payload: data });
-        setError("")
+        dispatchBuzz({ type: "SET_COMMENT", payload: data });
+        setError("");
       }
     };
-    comments(reqData, response);
-  }, [id, dispatch]);
+    getComments(reqData, response);
+  }, [id, dispatchBuzz]);
 
   useEffect(() => {
     buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
@@ -170,7 +167,7 @@ const Buzz = () => {
                 </div>
               </button>
               <CreateComment buzz={buzz} />
-              {buzz.user_id ===
+              {buzz.userID ===
                 JSON.parse(localStorage.getItem("user"))["id"] && (
                 <button
                   className="flex flex p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
@@ -206,13 +203,13 @@ const Buzz = () => {
           </h1>
         )}
         {comment != null &&
-          comment.map((b) => (
+          comment.map((buzz) => (
             <Buzzes
-              key={b._id}
+              key={buzz._id}
               onClick={() => {
-                handleClick(b._id);
+                handleClick(buzz._id);
               }}
-              buzz={b}
+              buzz={buzz}
               isComment={true}
             />
           ))}

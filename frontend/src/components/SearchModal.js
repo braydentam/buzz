@@ -14,7 +14,7 @@ const SearchModal = (props) => {
 
   useEffect(() => {
     let reqData = {
-      key: props.props,
+      query: props.query,
     };
     if (props.showModal) {
       const response = (data) => {
@@ -27,7 +27,7 @@ const SearchModal = (props) => {
       };
       search(reqData, response);
     }
-  }, [props, props.key]);
+  }, [props, props.query]);
 
   return (
     <div>
@@ -65,15 +65,15 @@ const SearchModal = (props) => {
                 </h3>
                 <ul className="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
                   {userList &&
-                    userList.map((u) => (
+                    userList.map((user) => (
                       <li
-                        key={u.username}
+                        key={user.username}
                         onClick={() => {
-                          handleClick(u.username);
+                          handleClick(user.username);
                         }}
                         className="hover:text-blue-500 hover:underline"
                       >
-                        {u.username}
+                        {user.username}
                       </li>
                     ))}
                 </ul>

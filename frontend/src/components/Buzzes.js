@@ -3,9 +3,9 @@ import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useNavigate } from "react-router-dom";
 import { deleteBuzz, like } from "../api/requests";
 
-const Buzzes = (buzz) => {
-  const b = buzz.buzz;
-  const { dispatch } = useBuzzContext();
+const Buzzes = (props) => {
+  const buzz = props.buzz;
+  const { dispatch: dispatchBuzz } = useBuzzContext();
   const [error, setError] = useState("");
   const [likeStatus, setLikeStatus] = useState("");
   const navigate = useNavigate();
@@ -16,26 +16,27 @@ const Buzzes = (buzz) => {
     }
   }
 
-  const handleProfile = () => {
-    navigate("/profile/" + b.username);
-  };
-
   useEffect(() => {
-    b.likes && b.likes.map((like_id) => isLiked(like_id));
-  }, [dispatch, b.likes]);
+    buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
+  }, [dispatchBuzz, buzz.likes]);
+
+  const handleProfile = () => {
+    navigate("/profile/" + buzz.username);
+  };
 
   const handleLike = async () => {
     let reqData = {
-      id: b._id,
+      likeID: buzz._id,
     };
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-        dispatch({ type: "SET_COMMENT", payload: data["comment"] });
-        dispatch({ type: "SET_LIKED", payload: data["liked"] });
+        dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+        dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
+        dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
         setLikeStatus(data["action"]);
+        setError("");
       }
     };
     await like(reqData, response);
@@ -43,26 +44,26 @@ const Buzzes = (buzz) => {
 
   const handleDelete = async () => {
     let reqData = {
-      id: b._id,
+      deleteID: buzz._id,
     };
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        if (buzz.isComment) {
-          dispatch({ type: "DELETE_COMMENT", payload: data["delete"] });
-          dispatch({ type: "SET_COMMENT", payload: data["comments"] });
-          dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("")
-        } else if (buzz.isLike) {
-          dispatch({ type: "DELETE_LIKE", payload: data["delete"] });
-          dispatch({ type: "SET_LIKED", payload: data["liked"] });
-          dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("")
+        if (props.isComment) {
+          dispatchBuzz({ type: "DELETE_COMMENT", payload: data["delete"] });
+          dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("");
+        } else if (props.isLike) {
+          dispatchBuzz({ type: "DELETE_LIKE", payload: data["delete"] });
+          dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("");
         } else {
-          dispatch({ type: "DELETE_BUZZ", payload: data["delete"] });
-          dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("")
+          dispatchBuzz({ type: "DELETE_BUZZ", payload: data["delete"] });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+          setError("");
         }
       }
     };
@@ -70,7 +71,7 @@ const Buzzes = (buzz) => {
   };
 
   return (
-    <div className="" onClick={buzz.onClick}>
+    <div className="" onClick={props.onClick}>
       <div className="block m-10 rounded-md bg-white p-6 hover:bg-gray-100 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
         <div className="flex">
           <button
@@ -81,16 +82,16 @@ const Buzzes = (buzz) => {
           >
             <span className="">
               <div className="pr-1 text-lg text-xl font-medium leading-tight text-neutral-800 hover:text-blue-500 hover:underline">
-                {b.name}
+                {buzz.name}
               </div>
             </span>
           </button>
           <span className="text-lg text-xl font-medium leading-tight text-gray-400">
             {" "}
-            @{b.username}
+            @{buzz.username}
           </span>
         </div>
-        <p className="mb-4 text-base text-neutral-600">{b.message}</p>
+        <p className="mb-4 text-base text-neutral-600">{buzz.message}</p>
         <div className="flex">
           <button
             onClick={(e) => {
@@ -126,7 +127,7 @@ const Buzzes = (buzz) => {
                     : "text-red-500 text-lg ml-15"
                 }
               >
-                {b.likes ? b.likes.length : 0}
+                {buzz.likes ? buzz.likes.length : 0}
               </div>
             </div>
           </button>
@@ -141,9 +142,9 @@ const Buzzes = (buzz) => {
             >
               <path d="M17.211,3.39H2.788c-0.22,0-0.4,0.18-0.4,0.4v9.614c0,0.221,0.181,0.402,0.4,0.402h3.206v2.402c0,0.363,0.429,0.533,0.683,0.285l2.72-2.688h7.814c0.221,0,0.401-0.182,0.401-0.402V3.79C17.612,3.569,17.432,3.39,17.211,3.39M16.811,13.004H9.232c-0.106,0-0.206,0.043-0.282,0.117L6.795,15.25v-1.846c0-0.219-0.18-0.4-0.401-0.4H3.189V4.19h13.622V13.004z"></path>
             </svg>
-            <div className="text-black text-lg ml-15">{b.commentCount}</div>
+            <div className="text-black text-lg ml-15">{buzz.commentCount}</div>
           </div>
-          {b.user_id === JSON.parse(localStorage.getItem("user"))["id"] && (
+          {buzz.userID === JSON.parse(localStorage.getItem("user"))["id"] && (
             <button
               className="flex ml-5 p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
               onClick={(e) => {

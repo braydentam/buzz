@@ -8,28 +8,32 @@ import CreateBuzz from "../components/CreateBuzz";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { buzz, dispatch } = useBuzzContext();
+  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const { logout } = useLogout();
   const { user } = useAuthContext();
+
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
+  
   useEffect(
     () => {
-      setError("");
       const response = (data) => {
         if (data) {
           if (data["error"]) {
             setError(data["error"].message);
-            dispatch({ type: "SET_BUZZ", payload: null });
-            if (data["error"].response && data["error"].response.status === 401) {
+            dispatchBuzz({ type: "SET_BUZZ", payload: null });
+            if (
+              data["error"].response &&
+              data["error"].response.status === 401
+            ) {
               logout();
             }
           } else {
-            dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-            setError("")
+            dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+            setError("");
           }
         }
       };
@@ -38,7 +42,7 @@ const Home = () => {
       }
     },
     // eslint-disable-next-line
-    [dispatch, user]
+    [dispatchBuzz, user]
   );
 
   return (

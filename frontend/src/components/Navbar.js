@@ -8,10 +8,10 @@ const Navbar = () => {
   const { user } = useAuthContext();
   const { logout } = useLogout();
   const [showModal, setShowModal] = useState(false);
-  const [key, setKey] = useState("");
-  var userURL = "";
+  const [query, setQuery] = useState("");
+  var userProfileURL = "";
   if (localStorage.getItem("user") != null) {
-    userURL =
+    userProfileURL =
       "/profile/" + JSON.parse(localStorage.getItem("user"))["username"];
   }
 
@@ -108,7 +108,7 @@ const Navbar = () => {
                       <input
                         type="text"
                         id="small-input"
-                        onChange={(e) => setKey(e.target.value)}
+                        onChange={(e) => setQuery(e.target.value)}
                         className="block w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search Profile"
                       ></input>
@@ -140,7 +140,7 @@ const Navbar = () => {
                     </div>
                   </li>
                   <li>
-                    <Link to={userURL}>
+                    <Link to={userProfileURL}>
                       <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
                         <span className="inline-flex justify-center items-center ml-4">
                           <svg
@@ -224,7 +224,7 @@ const Navbar = () => {
                     </button>
                   </li>
                   <SearchModal
-                    props={key}
+                    query={query}
                     showModal={showModal}
                     setShowModal={setShowModal}
                   />

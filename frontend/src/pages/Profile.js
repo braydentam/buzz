@@ -2,16 +2,16 @@ import { React, useEffect, useState } from "react";
 import Buzzes from "../components/Buzzes";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { getByUser } from "../api/requests";
+import { getByUsername } from "../api/requests";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useProfileContext } from "../hooks/useProfileContext";
-import { viewProfile } from "../api/requests";
+import { getProfile } from "../api/requests";
 import { follow } from "../api/requests";
 import UserModal from "../components/UserModal";
 
 const Profile = () => {
   const [error, setError] = useState("");
-  const { buzz, comment, liked, dispatch } = useBuzzContext();
+  const { buzz, comment, liked, dispatch: dispatchBuzz } = useBuzzContext();
   const { profile, dispatch: dispatchProfile } = useProfileContext();
   const [title, setTitle] = useState("Posts");
   const [showFollowers, setShowFollowers] = useState(false);
@@ -40,21 +40,20 @@ const Profile = () => {
   //fix naming conventions (id should lead to id, not username)
   useEffect(() => {
     let reqData = {
-      id: username,
+      username: username,
     };
-    setError("");
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"].message);
       } else {
-        dispatch({ type: "SET_BUZZ", payload: data["buzz"] });
-        dispatch({ type: "SET_COMMENT", payload: data["comments"] });
-        dispatch({ type: "SET_LIKED", payload: data["liked"] });
+        dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+        dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
+        dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
         setError("");
       }
     };
-    getByUser(reqData, response);
-  }, [username, dispatch]);
+    getByUsername(reqData, response);
+  }, [username, dispatchBuzz]);
 
   useEffect(() => {
     let reqData = {
@@ -69,12 +68,12 @@ const Profile = () => {
         setError("");
       }
     };
-    viewProfile(reqData, response);
+    getProfile(reqData, response);
   }, [dispatchProfile, username]);
 
   const handleFollow = async () => {
     let reqData = {
-      username: profile.username,
+      followUsername: profile.username,
     };
     const response = (data) => {
       if (data["error"]) {
@@ -85,7 +84,6 @@ const Profile = () => {
         setError("");
       }
     };
-    console.log(reqData);
     await follow(reqData, response);
   };
 
@@ -187,15 +185,15 @@ const Profile = () => {
         })}
       {comment &&
         title === "Comments" &&
-        comment.map((b) => {
-          if (b.username === username)
+        comment.map((commentBuzz) => {
+          if (commentBuzz.username === username)
             return (
               <Buzzes
-                key={b._id}
+                key={commentBuzz._id}
                 onClick={() => {
-                  handleClick(b._id);
+                  handleClick(commentBuzz._id);
                 }}
-                buzz={b}
+                buzz={commentBuzz}
                 isComment={true}
               />
             );
@@ -203,13 +201,13 @@ const Profile = () => {
         })}
       {liked &&
         title === "Liked Buzzes" &&
-        liked.map((b) => (
+        liked.map((likedBuzz) => (
           <Buzzes
-            key={b._id}
+            key={likedBuzz._id}
             onClick={() => {
-              handleClick(b._id);
+              handleClick(likedBuzz._id);
             }}
-            buzz={b}
+            buzz={likedBuzz}
             isComment={false}
             isLike={true}
           />

@@ -6,7 +6,7 @@ const CreateComment = (buzz) => {
   const [showModal, setShowModal] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
-  const { dispatch } = useBuzzContext();
+  const { dispatch: dispatchBuzz } = useBuzzContext();
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -17,9 +17,9 @@ const CreateComment = (buzz) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "CREATE_COMMENT", payload: data });
+        dispatchBuzz({ type: "CREATE_COMMENT", payload: data });
         setShowModal(false);
-        setError("")
+        setError("");
       }
     };
     e.preventDefault();

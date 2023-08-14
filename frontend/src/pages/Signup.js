@@ -7,7 +7,7 @@ const Signup = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { dispatch } = useAuthContext();
+  const { dispatch: dispatchAuth } = useAuthContext();
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -19,7 +19,7 @@ const Signup = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "LOGIN", payload: data });
+        dispatchAuth({ type: "LOGIN", payload: data });
         setError("");
       }
     };

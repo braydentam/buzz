@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from "react";
-import { viewFollowers, viewFollowing } from "../api/requests";
+import { getFollowers, getFollowing } from "../api/requests";
 import { useNavigate } from "react-router-dom";
 
 const UserModal = (user) => {
@@ -26,9 +26,9 @@ const UserModal = (user) => {
         }
       };
       if (user.type === "Followers") {
-        viewFollowers(reqData, response);
+        getFollowers(reqData, response);
       } else {
-        viewFollowing(reqData, response);
+        getFollowing(reqData, response);
       }
     }
   }, [user, user.username]);
@@ -69,15 +69,15 @@ const UserModal = (user) => {
                 </h3>
                 <ul className="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
                   {userList &&
-                    userList.map((u) => (
+                    userList.map((user) => (
                       <li
-                        key={u}
+                        key={user}
                         onClick={() => {
-                          handleClick(u);
+                          handleClick(user);
                         }}
                         className="hover:text-blue-500 hover:underline"
                       >
-                        {u}
+                        {user}
                       </li>
                     ))}
                 </ul>

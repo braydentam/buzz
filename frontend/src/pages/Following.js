@@ -28,7 +28,7 @@ const Following = () => {
         setError(data["error"].message);
       } else {
         dispatchBuzz({ type: "SET_BUZZ", payload: data });
-        setError("")
+        setError("");
       }
     };
     getFollowingBuzzes(response);

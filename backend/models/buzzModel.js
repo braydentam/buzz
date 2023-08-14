@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const buzzSchema = new Schema(
   {
-    user_id: {
+    userID: {
       type: String,
       required: true,
     },
@@ -38,7 +38,9 @@ const buzzSchema = new Schema(
 );
 
 buzzSchema.methods.newComment = async function () {
-  this.commentCount = await mongoose.model('Buzz').countDocuments({ comment: this._id });
+  this.commentCount = await mongoose
+    .model("Buzz")
+    .countDocuments({ comment: this._id });
   return this.save();
 };
 

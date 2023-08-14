@@ -6,7 +6,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { dispatch } = useAuthContext();
+  const { dispatch: dispatchAuth } = useAuthContext();
 
   const handleSubmit = async (e) => {
     let reqData = {
@@ -17,13 +17,14 @@ const Login = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatch({ type: "LOGIN", payload: data });
-        setError("")
+        dispatchAuth({ type: "LOGIN", payload: data });
+        setError("");
       }
     };
     e.preventDefault();
     await login(reqData, response);
   };
+
   return (
     <div className="ml-64">
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
