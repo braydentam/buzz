@@ -21,8 +21,8 @@ const Following = () => {
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
+
   useEffect(() => {
-    setError("");
     const response = (data) => {
       if (data["error"]) {
         setError(data["error"].message);

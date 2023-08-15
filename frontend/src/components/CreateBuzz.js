@@ -33,7 +33,6 @@ const CreateBuzz = () => {
         setError(data["error"].message);
       } else {
         setPosted(data);
-        console.log(data);
         setError("");
       }
     };

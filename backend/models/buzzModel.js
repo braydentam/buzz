@@ -37,7 +37,7 @@ const buzzSchema = new Schema(
   { timestamps: true }
 );
 
-buzzSchema.methods.newComment = async function () {
+buzzSchema.methods.updateCommentCount = async function () {
   this.commentCount = await mongoose
     .model("Buzz")
     .countDocuments({ comment: this._id });

@@ -7,9 +7,11 @@ const mongoose = require("mongoose");
 
 const createBuzz = async (req, res) => {
   const { message, comment } = req.body;
+
   if (!message) {
     return res.status(400).json("Please enter a message");
   }
+
   try {
     const userID = req.user._id;
     const user = await User.findById(userID);
@@ -25,8 +27,9 @@ const createBuzz = async (req, res) => {
 
     if (comment) {
       const parentBuzz = await Buzz.findById(comment);
-      await parentBuzz.newComment();
+      await parentBuzz.updateCommentCount();
     }
+
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -36,12 +39,14 @@ const createBuzz = async (req, res) => {
 const getAll = async (req, res) => {
   try {
     const userID = req.user._id;
+
     const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
       createdAt: -1,
     });
     const liked = await Buzz.find({ likes: userID }).sort({
       createdAt: -1,
     });
+
     res.status(200).json({ buzz: buzz, liked: liked });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -50,11 +55,14 @@ const getAll = async (req, res) => {
 
 const getById = async (req, res) => {
   const { id } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(400).json("Please enter an id");
   }
+
   try {
     const buzz = await Buzz.findById(id);
+
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -63,6 +71,7 @@ const getById = async (req, res) => {
 
 const getByUsername = async (req, res) => {
   const { username } = req.params;
+
   try {
     const buzz = await Buzz.find({
       username: username,
@@ -72,8 +81,10 @@ const getByUsername = async (req, res) => {
       username: username,
       comment: { $exists: true },
     }).sort({ createdAt: -1 });
+
     const user = await User.findOne({ username: username });
     const liked = await Buzz.find({ likes: user._id }).sort({ createdAt: -1 });
+
     res.status(200).json({ buzz: buzz, comments: comments, liked: liked });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -83,18 +94,25 @@ const getByUsername = async (req, res) => {
 const deleteBuzz = async (req, res) => {
   const { deleteID } = req.body;
   const userID = req.user._id;
+
   if (!mongoose.Types.ObjectId.isValid(deleteID)) {
     return res.status(404).json({ error: "No such workout" });
   }
+
   const originalBuzz = await Buzz.findOne({ _id: deleteID });
-  if (originalBuzz.comment) {
-    const parentBuzz = await Buzz.findOne({ _id: b.comment });
-    await parentBuzz.newComment();
-  }
+
   const deleted = await Buzz.findOneAndDelete({ _id: deleteID });
   if (!deleted) {
     return res.status(400).json({ error: "No such workout" });
   }
+
+  if (originalBuzz && originalBuzz.comment) {
+    const parentBuzz = await Buzz.findOne({ _id: originalBuzz.comment });
+    if (parentBuzz) {
+      await parentBuzz.updateCommentCount();
+    }
+  }
+
   const buzz = await Buzz.find({
     comment: { $exists: false },
   }).sort({ createdAt: -1 });
@@ -102,6 +120,7 @@ const deleteBuzz = async (req, res) => {
     comment: { $exists: true },
   }).sort({ createdAt: -1 });
   const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
+
   res
     .status(200)
     .json({ delete: deleted, buzz: buzz, comments: comments, liked: liked });
@@ -110,11 +129,14 @@ const deleteBuzz = async (req, res) => {
 const likeBuzz = async (req, res) => {
   const { likeID } = req.body;
   const userID = req.user._id;
+
   if (!mongoose.Types.ObjectId.isValid(likeID)) {
     return res.status(400).json("Please enter an id");
   }
+
   try {
     const profile = await Profile.findOne({ user: userID });
+    var action = "";
     if (profile.hasLiked(likeID)) {
       await Buzz.findOneAndUpdate(
         { _id: likeID },
@@ -130,34 +152,25 @@ const likeBuzz = async (req, res) => {
           new: true,
         }
       );
-      const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
-        createdAt: -1,
-      });
-      const comments = await Buzz.find({ comment: { $exists: true } }).sort({
-        createdAt: -1,
-      });
-      const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
-      return res.status(200).json({
-        buzz: buzz,
-        comment: comments,
-        liked: liked,
-        action: "unliked",
-      });
+      action = "unliked";
+    } else {
+      await Buzz.findOneAndUpdate(
+        { _id: likeID },
+        { $push: { likes: userID } },
+        {
+          new: true,
+        }
+      );
+      await Profile.findOneAndUpdate(
+        { user: userID },
+        { $push: { likes: likeID } },
+        {
+          new: true,
+        }
+      );
+      action = "liked";
     }
-    await Buzz.findOneAndUpdate(
-      { _id: likeID },
-      { $push: { likes: userID } },
-      {
-        new: true,
-      }
-    );
-    await Profile.findOneAndUpdate(
-      { user: userID },
-      { $push: { likes: likeID } },
-      {
-        new: true,
-      }
-    );
+
     const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
       createdAt: -1,
     });
@@ -165,9 +178,10 @@ const likeBuzz = async (req, res) => {
       createdAt: -1,
     });
     const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
+
     res
       .status(200)
-      .json({ buzz: buzz, comment: comments, liked: liked, action: "liked" });
+      .json({ buzz: buzz, comment: comments, liked: liked, action: action });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -175,12 +189,14 @@ const likeBuzz = async (req, res) => {
 
 const getFollowing = async (req, res) => {
   const userID = req.user._id;
+
   try {
     const userProfile = await Profile.findOne({ user: userID });
     const buzz = await Buzz.find({
       username: userProfile.following,
       comment: { $exists: false },
     });
+
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -189,11 +205,14 @@ const getFollowing = async (req, res) => {
 
 const getComments = async (req, res) => {
   const { parentID } = req.params;
+
   if (!mongoose.Types.ObjectId.isValid(parentID)) {
     return res.status(400).json("Please enter an id");
   }
+
   try {
     const buzz = await Buzz.find({ comment: parentID });
+
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -202,9 +221,11 @@ const getComments = async (req, res) => {
 
 const hasPosted = async (req, res) => {
   const userID = req.user._id;
+
   if (!mongoose.Types.ObjectId.isValid(userID)) {
     return res.status(400).json("Please enter an id");
   }
+
   try {
     const buzz = await Buzz.findOne({
       userID: userID,
@@ -213,6 +234,7 @@ const hasPosted = async (req, res) => {
     if (buzz) {
       let currentDate = new Date().toISOString().substring(0, 10);
       let lastPostedDate = buzz.createdAt.toISOString().substring(0, 10);
+
       res.status(200).json(currentDate === lastPostedDate);
     } else {
       res.status(200).json(false);

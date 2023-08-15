@@ -8,6 +8,7 @@ const createToken = (_id) => {
 
 const signupUser = async (req, res) => {
   const { name, username, password } = req.body;
+
   try {
     const user = await User.signup(name, username, password);
     const token = createToken(user._id);
@@ -18,6 +19,7 @@ const signupUser = async (req, res) => {
       username: username,
     });
     Promise.all([profile.save()]);
+
     res.status(200).json({ username, id, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -26,10 +28,12 @@ const signupUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
+
   try {
     const user = await User.login(username, password);
     const token = createToken(user._id);
     const id = user._id;
+    
     res.status(200).json({ username, id, token });
   } catch (error) {
     res.status(400).json({ error: error.message });

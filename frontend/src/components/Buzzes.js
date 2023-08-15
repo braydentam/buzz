@@ -50,6 +50,8 @@ const Buzzes = (props) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
+        console.log(data);
+        console.log(props);
         if (props.isComment) {
           dispatchBuzz({ type: "DELETE_COMMENT", payload: data["delete"] });
           dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
