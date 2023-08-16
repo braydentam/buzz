@@ -28,6 +28,7 @@ const createBuzz = async (req, res) => {
     if (comment) {
       const parentBuzz = await Buzz.findById(comment);
       await parentBuzz.updateCommentCount();
+      //if post is a comment, increment comment count of parent
     }
 
     res.status(200).json(buzz);
@@ -86,6 +87,7 @@ const getByUsername = async (req, res) => {
     const liked = await Buzz.find({ likes: user._id }).sort({ createdAt: -1 });
 
     res.status(200).json({ buzz: buzz, comments: comments, liked: liked });
+    //returns a user's buzzes, comments, and liked posts
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -110,6 +112,7 @@ const deleteBuzz = async (req, res) => {
     const parentBuzz = await Buzz.findOne({ _id: originalBuzz.comment });
     if (parentBuzz) {
       await parentBuzz.updateCommentCount();
+      //if post is a comment, decrement the comment count of the parent
     }
   }
 
@@ -123,7 +126,8 @@ const deleteBuzz = async (req, res) => {
 
   res
     .status(200)
-    .json({ delete: deleted, buzz: buzz, comments: comments, liked: liked });
+    .json({ buzz: buzz, comments: comments, liked: liked });
+  //returns the updated buzzes, comments, and liked posts after deletion
 };
 
 const likeBuzz = async (req, res) => {
@@ -182,6 +186,7 @@ const likeBuzz = async (req, res) => {
     res
       .status(200)
       .json({ buzz: buzz, comment: comments, liked: liked, action: action });
+      //returns the updated buzzes, comments, and liked posts after liking/unliking
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -236,6 +241,7 @@ const hasPosted = async (req, res) => {
       let lastPostedDate = buzz.createdAt.toISOString().substring(0, 10);
 
       res.status(200).json(currentDate === lastPostedDate);
+      //return if the user has posted on the current date
     } else {
       res.status(200).json(false);
     }

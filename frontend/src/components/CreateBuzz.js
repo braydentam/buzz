@@ -33,6 +33,7 @@ const CreateBuzz = () => {
         setError(data["error"].message);
       } else {
         setPosted(data);
+        //disables creating a post if a user already posted today
         setError("");
       }
     };

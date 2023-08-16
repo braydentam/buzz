@@ -22,6 +22,7 @@ const SearchModal = (props) => {
           setError(data["error"]);
         } else {
           setUserList(data);
+          //shows a list of users that satisfy a profile search query
           setError("");
         }
       };

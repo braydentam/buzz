@@ -13,6 +13,7 @@ const Navbar = () => {
   if (localStorage.getItem("user") != null) {
     userProfileURL =
       "/profile/" + JSON.parse(localStorage.getItem("user"))["username"];
+      //set the URL that the profile button will lead to
   }
 
   const handleClick = () => {

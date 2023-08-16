@@ -1,3 +1,5 @@
+//AuthContext manages the authentication of a user, as well as login/logout
+
 import { createContext, useReducer, useEffect } from "react";
 
 export const AuthContext = createContext();

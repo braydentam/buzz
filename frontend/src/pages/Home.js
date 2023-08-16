@@ -31,6 +31,7 @@ const Home = () => {
             ) {
               logout();
             }
+            //If a user fails authentication or JWT token expires, logout
           } else {
             dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
             setError("");

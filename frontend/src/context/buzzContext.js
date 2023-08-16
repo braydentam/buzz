@@ -1,3 +1,5 @@
+//BuzzContext manages the buzzes, comments, and liked buzzes that are being displayed on screen
+
 import { createContext, useReducer } from "react";
 
 export const BuzzContext = createContext();
@@ -32,18 +34,6 @@ export const buzzReducer = (state, action) => {
       return {
         ...state,
         liked: [action.payload, ...state.liked],
-      };
-    case "DELETE_BUZZ":
-      return {
-        buzz: state.buzz.filter((b) => b._id !== action.payload._id),
-      };
-    case "DELETE_COMMENT":
-      return {
-        comment: state.comment.filter((c) => c._id !== action.payload._id),
-      };
-    case "DELETE_LIKED":
-      return {
-        liked: state.liked.filter((l) => l._id !== action.payload._id),
       };
     default:
       return state;

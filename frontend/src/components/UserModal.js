@@ -22,6 +22,7 @@ const UserModal = (user) => {
           setError(data["error"]);
         } else {
           setUserList(data);
+          //shows a list of users that a profile is followed by or following
           setError("");
         }
       };

@@ -12,7 +12,6 @@ import CreateComment from "../components/CreateComment";
 const Buzz = () => {
   const { id } = useParams();
   const [error, setError] = useState("");
-  const [buzzID, setBuzzID] = useState("");
   const [buzz, setBuzz] = useState(null);
   const { comment, dispatch: dispatchBuzz } = useBuzzContext();
   const [likeStatus, setLikeStatus] = useState("");
@@ -30,7 +29,6 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatchBuzz({ type: "DELETE_BUZZ", payload: data });
         navigate("/");
         setError("");
       }
@@ -40,12 +38,6 @@ const Buzz = () => {
 
   function handleClick(id) {
     navigate("/buzz/" + id);
-  }
-
-  function isLiked(id) {
-    if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
-      setLikeStatus("liked");
-    }
   }
 
   function findBuzz(array, id) {
@@ -62,8 +54,9 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        setBuzz(findBuzz(data["buzz"], buzzID));
+        setBuzz(findBuzz(data["buzz"], id));
         setLikeStatus(data["action"]);
+        //finds the "parent" buzz being displayed from a list of buzzes and sets the "parent" buzz to be displayed and liked status
         setError("");
       }
     };
@@ -79,10 +72,10 @@ const Buzz = () => {
         setError(data["error"]);
       } else {
         setBuzz(data);
+        //sets the "parent" buzz being displayed
         setError("");
       }
     };
-    setBuzzID(id);
     getById(reqData, response);
   }, [id]);
 
@@ -101,9 +94,16 @@ const Buzz = () => {
     getComments(reqData, response);
   }, [id, dispatchBuzz]);
 
+  function isLiked(id) {
+    if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
+      setLikeStatus("liked");
+    }
+  }
+
   useEffect(() => {
     buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
   }, [buzz]);
+  //Sets the liked status, which shows the liked logo if a post is liked
 
   return (
     <div>

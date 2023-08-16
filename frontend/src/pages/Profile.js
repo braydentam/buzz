@@ -28,16 +28,15 @@ const Profile = () => {
 
   useEffect(() => {
     if (profile && profile.followers && profile.followers.length > 0) {
-      profile.followers &&
         profile.followers.map((profile_id) => isFollowed(profile_id));
     }
+    //checks if a user is following this profile
   }, [dispatchProfile, profile]);
 
   function handleClick(id) {
     navigate("/buzz/" + id);
   }
 
-  //fix naming conventions (id should lead to id, not username)
   useEffect(() => {
     let reqData = {
       username: username,
@@ -49,6 +48,7 @@ const Profile = () => {
         dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
         dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
         dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+        //displays the profile's buzzes, comments, and liked buzzes that has been clicked on
         setError("");
       }
     };
@@ -65,6 +65,7 @@ const Profile = () => {
         setError(data["error"].message);
       } else {
         dispatchProfile({ type: "SET_PROFILE", payload: data });
+        //displays the profile that has been clicked on
         setError("");
       }
     };

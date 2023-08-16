@@ -19,6 +19,7 @@ const Buzzes = (props) => {
   useEffect(() => {
     buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
   }, [dispatchBuzz, buzz.likes]);
+  //Sets the liked status, which shows the liked logo if a post is liked
 
   const handleProfile = () => {
     navigate("/profile/" + buzz.username);
@@ -50,23 +51,20 @@ const Buzzes = (props) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        console.log(data);
-        console.log(props);
         if (props.isComment) {
-          dispatchBuzz({ type: "DELETE_COMMENT", payload: data["delete"] });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
           dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
-          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("");
+          dispatchBuzz({ type: "SET_LIKED", payload: data["comments"] });
         } else if (props.isLike) {
-          dispatchBuzz({ type: "DELETE_LIKE", payload: data["delete"] });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
-          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("");
+          dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
         } else {
-          dispatchBuzz({ type: "DELETE_BUZZ", payload: data["delete"] });
           dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
-          setError("");
+          dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+          dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
         }
+        setError("");
       }
     };
     await deleteBuzz(reqData, response);
