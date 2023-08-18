@@ -1,25 +1,24 @@
+//Profile page is used to show a profile;s buzzes, comments, liked buzzes, and following/followers as well as the option to follow
+
 import { React, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Buzzes from "../components/Buzzes";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { getByUsername } from "../api/requests";
+import UserModal from "../components/UserModal";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useProfileContext } from "../hooks/useProfileContext";
-import { getProfile } from "../api/requests";
-import { follow } from "../api/requests";
-import UserModal from "../components/UserModal";
+import { getProfile, getByUsername, follow } from "../api/requests";
 
 const Profile = () => {
-  const [error, setError] = useState("");
+  const { username } = useParams();
+  const navigate = useNavigate();
   const { buzz, comment, liked, dispatch: dispatchBuzz } = useBuzzContext();
   const { profile, dispatch: dispatchProfile } = useProfileContext();
+  const [error, setError] = useState("");
   const [title, setTitle] = useState("Posts");
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
   const [followStatus, setFollowStatus] = useState("");
-  const { username } = useParams();
-  const navigate = useNavigate();
-
+  
   function isFollowed(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["username"]) {
       setFollowStatus("followed");
@@ -32,10 +31,6 @@ const Profile = () => {
     }
     //checks if a user is following this profile
   }, [dispatchProfile, profile]);
-
-  function handleClick(id) {
-    navigate("/buzz/" + id);
-  }
 
   useEffect(() => {
     let reqData = {
@@ -71,6 +66,10 @@ const Profile = () => {
     };
     getProfile(reqData, response);
   }, [dispatchProfile, username]);
+
+  function navigateToBuzz(id) {
+    navigate("/buzz/" + id);
+  }
 
   const handleFollow = async () => {
     let reqData = {
@@ -176,7 +175,7 @@ const Profile = () => {
               <Buzzes
                 key={b._id}
                 onClick={() => {
-                  handleClick(b._id);
+                  navigateToBuzz(b._id);
                 }}
                 buzz={b}
                 isComment={false}
@@ -192,7 +191,7 @@ const Profile = () => {
               <Buzzes
                 key={commentBuzz._id}
                 onClick={() => {
-                  handleClick(commentBuzz._id);
+                  navigateToBuzz(commentBuzz._id);
                 }}
                 buzz={commentBuzz}
                 isComment={true}
@@ -206,7 +205,7 @@ const Profile = () => {
           <Buzzes
             key={likedBuzz._id}
             onClick={() => {
-              handleClick(likedBuzz._id);
+              navigateToBuzz(likedBuzz._id);
             }}
             buzz={likedBuzz}
             isComment={false}

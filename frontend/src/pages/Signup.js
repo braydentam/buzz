@@ -1,14 +1,14 @@
 import { React, useState } from "react";
-import { signup } from "../api/requests";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { signup } from "../api/requests";
 
 const Signup = () => {
+  const { dispatch: dispatchAuth } = useAuthContext();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const { dispatch: dispatchAuth } = useAuthContext();
-
+  
   const handleSubmit = async (e) => {
     let reqData = {
       name: name,

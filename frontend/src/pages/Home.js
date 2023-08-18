@@ -1,23 +1,19 @@
 import { React, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Buzzes from "../components/Buzzes";
+import CreateBuzz from "../components/CreateBuzz";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useAuthContext } from "../hooks/useAuthContext";
 import { useLogout } from "../hooks/useLogout";
 import { getExplore } from "../api/requests";
-import CreateBuzz from "../components/CreateBuzz";
-import { useNavigate } from "react-router-dom";
 
 const Home = () => {
-  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
   const { logout } = useLogout();
   const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
+  const [error, setError] = useState("");
 
-  function handleClick(id) {
-    navigate("/buzz/" + id);
-  }
-  
   useEffect(
     () => {
       const response = (data) => {
@@ -46,6 +42,10 @@ const Home = () => {
     [dispatchBuzz, user]
   );
 
+  function navigateToBuzz(id) {
+    navigate("/buzz/" + id);
+  }
+  
   return (
     <div className="ml-64">
       {buzz && (
@@ -61,7 +61,7 @@ const Home = () => {
           <Buzzes
             key={b._id}
             onClick={() => {
-              handleClick(b._id);
+              navigateToBuzz(b._id);
             }}
             buzz={b}
             isComment={false}

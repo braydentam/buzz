@@ -1,17 +1,12 @@
 import { React, useEffect, useState } from "react";
-import { search } from "../api/requests";
 import { useNavigate } from "react-router-dom";
+import { search } from "../api/requests";
 
 const SearchModal = (props) => {
+  const navigate = useNavigate();
   const [userList, setUserList] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const handleClick = (name) => {
-    props.setShowModal(false);
-    navigate("/profile/" + name);
-  };
-
+  
   useEffect(() => {
     let reqData = {
       query: props.query,
@@ -29,6 +24,11 @@ const SearchModal = (props) => {
       search(reqData, response);
     }
   }, [props, props.query]);
+
+  const navigateToProfile = (name) => {
+    props.setShowModal(false);
+    navigate("/profile/" + name);
+  };
 
   return (
     <div>
@@ -70,7 +70,7 @@ const SearchModal = (props) => {
                       <li
                         key={user.username}
                         onClick={() => {
-                          handleClick(user.username);
+                          navigateToProfile(user.username);
                         }}
                         className="hover:text-blue-500 hover:underline"
                       >

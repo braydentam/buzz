@@ -1,12 +1,8 @@
 import axios from "axios";
 import * as url from "./urls";
 
-//TODO: fix the res.status(400) messages
-
 export const login = async (req, res) => {
   const { username, password } = req;
-  if (!username || !password)
-    return res.status(400).send("Please enter username/password");
   var formdata = new FormData();
   formdata.append("username", username.toLowerCase());
   formdata.append("password", password);
@@ -21,24 +17,16 @@ export const login = async (req, res) => {
   axios(config)
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
 export const signup = async (req, res) => {
   const { name, username, password } = req;
-  if (!name || !username || !password)
-    return res.status(400).send("Please enter name/username/password");
   var formdata = new FormData();
   formdata.append("name", name);
   formdata.append("username", username.toLowerCase());
@@ -54,17 +42,11 @@ export const signup = async (req, res) => {
   axios(config)
     .then(function (response) {
       localStorage.setItem("user", JSON.stringify(response.data));
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -80,16 +62,10 @@ export const getExplore = async (res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
-      if (res) {
-        res({ error: error });
-      }
-      return { error: error };
+      res({ error: error });
     });
 };
 
@@ -106,16 +82,10 @@ export const getById = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -132,23 +102,16 @@ export const getByUsername = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error });
-      }
-      return { error: error };
+      res({ error: error });
     });
 };
 
 export const createBuzz = async (req, res) => {
   const { message, comment } = req;
-  if (!message) return res.status(400).send("Please enter a message");
   var formdata = new FormData();
   formdata.append("message", message);
   if (comment) {
@@ -167,23 +130,16 @@ export const createBuzz = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
 export const like = async (req, res) => {
   const { likeID } = req;
-  if (!likeID) return res.status(400).send("Please enter a id");
   var formdata = new FormData();
   formdata.append("likeID", likeID);
   var config = {
@@ -199,17 +155,11 @@ export const like = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -226,22 +176,15 @@ export const getProfile = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
-      if (res) {
-        res({ error: error });
-      }
-      return { error: error };
+      res({ error: error });
     });
 };
 
 export const follow = async (req, res) => {
   const { followUsername } = req;
-  if (!followUsername) return res.status(400).send("Please enter a username");
   var formdata = new FormData();
   formdata.append("followUsername", followUsername);
   var config = {
@@ -257,17 +200,11 @@ export const follow = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -283,22 +220,15 @@ export const getFollowingBuzzes = async (res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
-      if (res) {
-        res({ error: error });
-      }
-      return { error: error };
+      res({ error: error });
     });
 };
 
 export const getComments = async (req, res) => {
   const { parentID } = req;
-  if (!parentID) return res.status(400).send("Please enter a id");
   var config = {
     method: "get",
     url: url.GETCOMMENTS + "/" + parentID,
@@ -310,23 +240,16 @@ export const getComments = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
 export const deleteBuzz = async (req, res) => {
   const { deleteID } = req;
-  if (!deleteID) return res.status(400).send("Please enter a id");
   var formdata = new FormData();
   formdata.append("deleteID", deleteID);
   var config = {
@@ -342,17 +265,11 @@ export const deleteBuzz = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -370,17 +287,11 @@ export const getFollowers = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -398,17 +309,11 @@ export const getFollowing = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -416,7 +321,6 @@ export const search = async (req, res) => {
   const { query } = req;
   if (!query) {
     res({ error: "Please enter a search query" });
-    return { error: "Please enter a search query" };
   }
   var formdata = new FormData();
   formdata.append("query", query.toLowerCase());
@@ -433,17 +337,11 @@ export const search = async (req, res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
       console.log(error);
-      if (res) {
-        res({ error: error.response.data.error });
-      }
-      return { error: error.response.data.error };
+      res({ error: error.response.data.error });
     });
 };
 
@@ -459,15 +357,9 @@ export const hasPosted = async (res) => {
   };
   axios(config)
     .then(function (response) {
-      if (res) {
-        res(response.data);
-      }
-      return response.data;
+      res(response.data);
     })
     .catch(function (error) {
-      if (res) {
-        res({ error: error });
-      }
-      return { error: error };
+      res({ error: error });
     });
 };

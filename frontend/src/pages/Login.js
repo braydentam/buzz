@@ -1,6 +1,6 @@
 import { React, useState } from "react";
-import { login } from "../api/requests";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { login } from "../api/requests";
 
 const Login = () => {
   const [username, setUsername] = useState("");

@@ -1,14 +1,17 @@
+//Buzzes Component is used whenever there needs to be a single or list of buzzes displayed
+
 import { React, useState, useEffect } from "react";
-import { useBuzzContext } from "../hooks/useBuzzContext";
 import { useNavigate } from "react-router-dom";
+import { useBuzzContext } from "../hooks/useBuzzContext";
 import { deleteBuzz, like } from "../api/requests";
 
 const Buzzes = (props) => {
   const buzz = props.buzz;
+  const navigate = useNavigate();
   const { dispatch: dispatchBuzz } = useBuzzContext();
   const [error, setError] = useState("");
   const [likeStatus, setLikeStatus] = useState("");
-  const navigate = useNavigate();
+  
 
   function isLiked(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["id"]) {

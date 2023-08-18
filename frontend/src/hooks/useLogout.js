@@ -1,6 +1,7 @@
 import { useAuthContext } from "./useAuthContext";
 import { useBuzzContext } from "./useBuzzContext";
 import { useProfileContext } from "./useProfileContext";
+
 export const useLogout = () => {
   const { dispatch: dispatchAuth } = useAuthContext();
   const { dispatch: dispatchBuzz } = useBuzzContext();

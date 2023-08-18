@@ -1,17 +1,14 @@
+//UserModal Component is a popup that shows the following list or followers list of a user
+
 import { React, useEffect, useState } from "react";
-import { getFollowers, getFollowing } from "../api/requests";
 import { useNavigate } from "react-router-dom";
+import { getFollowers, getFollowing } from "../api/requests";
 
 const UserModal = (user) => {
+  const navigate = useNavigate();
   const [userList, setUserList] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const handleClick = (name) => {
-    user.setShowModal(false);
-    navigate("/profile/" + name);
-  };
-
+  
   useEffect(() => {
     let reqData = {
       username: user.username,
@@ -33,6 +30,11 @@ const UserModal = (user) => {
       }
     }
   }, [user, user.username]);
+
+  const navigateToProfile = (name) => {
+    user.setShowModal(false);
+    navigate("/profile/" + name);
+  };
 
   return (
     <div>
@@ -74,7 +76,7 @@ const UserModal = (user) => {
                       <li
                         key={user}
                         onClick={() => {
-                          handleClick(user);
+                          navigateToProfile(user);
                         }}
                         className="hover:text-blue-500 hover:underline"
                       >

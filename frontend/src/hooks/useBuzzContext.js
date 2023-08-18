@@ -1,5 +1,5 @@
-import { BuzzContext } from "../context/buzzContext";
 import { useContext } from "react";
+import { BuzzContext } from "../context/buzzContext";
 
 export const useBuzzContext = () => {
   const context = useContext(BuzzContext);

@@ -3,10 +3,10 @@ import { useBuzzContext } from "../hooks/useBuzzContext";
 import { createBuzz } from "../api/requests";
 
 const CreateComment = (buzz) => {
+  const { dispatch: dispatchBuzz } = useBuzzContext();
   const [showModal, setShowModal] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
-  const { dispatch: dispatchBuzz } = useBuzzContext();
 
   const handleSubmit = async (e) => {
     let reqData = {

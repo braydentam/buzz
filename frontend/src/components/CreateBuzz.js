@@ -1,14 +1,30 @@
+//CreateBuzz component is a popup that allows users to post a Buzz, once a day
+
 import { React, useEffect, useState } from "react";
 import { useBuzzContext } from "../hooks/useBuzzContext";
 import { createBuzz, hasPosted } from "../api/requests";
 
 const CreateBuzz = () => {
+  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
   const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [posted, setPosted] = useState(false);
-  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
 
+  useEffect(() => {
+    setError("");
+    const response = (data) => {
+      if (data["error"]) {
+        setError(data["error"].message);
+      } else {
+        setPosted(data);
+        //disables creating a post if a user already posted today
+        setError("");
+      }
+    };
+    hasPosted(response);
+  }, [buzz]);
+  
   const handleSubmit = async (e) => {
     let reqData = {
       message: message,
@@ -25,20 +41,6 @@ const CreateBuzz = () => {
     e.preventDefault();
     await createBuzz(reqData, response);
   };
-
-  useEffect(() => {
-    setError("");
-    const response = (data) => {
-      if (data["error"]) {
-        setError(data["error"].message);
-      } else {
-        setPosted(data);
-        //disables creating a post if a user already posted today
-        setError("");
-      }
-    };
-    hasPosted(response);
-  }, [buzz]);
 
   return (
     <div>

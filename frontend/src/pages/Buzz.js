@@ -1,67 +1,30 @@
-import { React, useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import Buzzes from "../components/Buzzes";
-import { useBuzzContext } from "../hooks/useBuzzContext";
-import { getById } from "../api/requests";
-import { like, getComments, deleteBuzz } from "../api/requests";
-import { useNavigate } from "react-router-dom";
-import CreateComment from "../components/CreateComment";
-//TODO: fix naming for comments vs comment
+//Buzz page is used to display a singular buzz that is clicked and its corresponding comments
 
-//TODO: order functions and variables
+import { React, useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Buzzes from "../components/Buzzes";
+import CreateComment from "../components/CreateComment";
+import { useBuzzContext } from "../hooks/useBuzzContext";
+import { like, getComments, getById, deleteBuzz } from "../api/requests";
+
 const Buzz = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { comment, dispatch: dispatchBuzz } = useBuzzContext();
   const [error, setError] = useState("");
   const [buzz, setBuzz] = useState(null);
-  const { comment, dispatch: dispatchBuzz } = useBuzzContext();
   const [likeStatus, setLikeStatus] = useState("");
-  const navigate = useNavigate();
-
-  const handleProfile = () => {
-    navigate("/profile/" + buzz.username);
-  };
-
-  const handleDelete = async () => {
-    let reqData = {
-      deleteID: buzz._id,
-    };
-    const response = (data) => {
-      if (data["error"]) {
-        setError(data["error"]);
-      } else {
-        navigate("/");
-        setError("");
-      }
-    };
-    await deleteBuzz(reqData, response);
-  };
-
-  function handleClick(id) {
-    navigate("/buzz/" + id);
+  
+  function isLiked(id) {
+    if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
+      setLikeStatus("liked");
+    }
   }
 
-  function findBuzz(array, id) {
-    return array.find((element) => {
-      return element._id === id;
-    });
-  }
-
-  const handleLike = async () => {
-    let reqData = {
-      likeID: buzz._id,
-    };
-    const response = (data) => {
-      if (data["error"]) {
-        setError(data["error"]);
-      } else {
-        setBuzz(findBuzz(data["buzz"], id));
-        setLikeStatus(data["action"]);
-        //finds the "parent" buzz being displayed from a list of buzzes and sets the "parent" buzz to be displayed and liked status
-        setError("");
-      }
-    };
-    await like(reqData, response);
-  };
+  useEffect(() => {
+    buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
+  }, [buzz]);
+  //Sets the liked status, which shows the liked logo if a post is liked
 
   useEffect(() => {
     let reqData = {
@@ -94,16 +57,51 @@ const Buzz = () => {
     getComments(reqData, response);
   }, [id, dispatchBuzz]);
 
-  function isLiked(id) {
-    if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
-      setLikeStatus("liked");
-    }
+  const handleProfile = () => {
+    navigate("/profile/" + buzz.username);
+  };
+
+  function navigateToBuzz(id) {
+    navigate("/buzz/" + id);
   }
 
-  useEffect(() => {
-    buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
-  }, [buzz]);
-  //Sets the liked status, which shows the liked logo if a post is liked
+  function findBuzz(array, id) {
+    return array.find((element) => {
+      return element._id === id;
+    });
+  }
+
+  const handleDelete = async () => {
+    let reqData = {
+      deleteID: buzz._id,
+    };
+    const response = (data) => {
+      if (data["error"]) {
+        setError(data["error"]);
+      } else {
+        navigate("/");
+        setError("");
+      }
+    };
+    await deleteBuzz(reqData, response);
+  };
+
+  const handleLike = async () => {
+    let reqData = {
+      likeID: buzz._id,
+    };
+    const response = (data) => {
+      if (data["error"]) {
+        setError(data["error"]);
+      } else {
+        setBuzz(findBuzz(data["buzz"], id));
+        setLikeStatus(data["action"]);
+        //finds the "parent" buzz being displayed from a list of buzzes and sets the "parent" buzz to be displayed and liked status
+        setError("");
+      }
+    };
+    await like(reqData, response);
+  };
 
   return (
     <div>
@@ -207,7 +205,7 @@ const Buzz = () => {
             <Buzzes
               key={buzz._id}
               onClick={() => {
-                handleClick(buzz._id);
+                navigateToBuzz(buzz._id);
               }}
               buzz={buzz}
               isComment={true}

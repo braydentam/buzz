@@ -1,9 +1,7 @@
+const mongoose = require("mongoose");
 const Buzz = require("../models/buzzModel");
 const User = require("../models/userModel");
 const Profile = require("../models/profileModel");
-const mongoose = require("mongoose");
-
-//TODO: have uniform titling of responses
 
 const createBuzz = async (req, res) => {
   const { message, comment } = req.body;
@@ -24,13 +22,11 @@ const createBuzz = async (req, res) => {
       message,
       comment,
     });
-
     if (comment) {
       const parentBuzz = await Buzz.findById(comment);
       await parentBuzz.updateCommentCount();
       //if post is a comment, increment comment count of parent
     }
-
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -40,14 +36,12 @@ const createBuzz = async (req, res) => {
 const getAll = async (req, res) => {
   try {
     const userID = req.user._id;
-
     const buzz = await Buzz.find({ comment: { $exists: false } }).sort({
       createdAt: -1,
     });
     const liked = await Buzz.find({ likes: userID }).sort({
       createdAt: -1,
     });
-
     res.status(200).json({ buzz: buzz, liked: liked });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -63,7 +57,6 @@ const getById = async (req, res) => {
 
   try {
     const buzz = await Buzz.findById(id);
-
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -82,10 +75,8 @@ const getByUsername = async (req, res) => {
       username: username,
       comment: { $exists: true },
     }).sort({ createdAt: -1 });
-
     const user = await User.findOne({ username: username });
     const liked = await Buzz.find({ likes: user._id }).sort({ createdAt: -1 });
-
     res.status(200).json({ buzz: buzz, comments: comments, liked: liked });
     //returns a user's buzzes, comments, and liked posts
   } catch (error) {
@@ -102,12 +93,10 @@ const deleteBuzz = async (req, res) => {
   }
 
   const originalBuzz = await Buzz.findOne({ _id: deleteID });
-
   const deleted = await Buzz.findOneAndDelete({ _id: deleteID });
   if (!deleted) {
     return res.status(400).json({ error: "No such workout" });
   }
-
   if (originalBuzz && originalBuzz.comment) {
     const parentBuzz = await Buzz.findOne({ _id: originalBuzz.comment });
     if (parentBuzz) {
@@ -123,7 +112,6 @@ const deleteBuzz = async (req, res) => {
     comment: { $exists: true },
   }).sort({ createdAt: -1 });
   const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
-
   res
     .status(200)
     .json({ buzz: buzz, comments: comments, liked: liked });
@@ -182,7 +170,6 @@ const likeBuzz = async (req, res) => {
       createdAt: -1,
     });
     const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
-
     res
       .status(200)
       .json({ buzz: buzz, comment: comments, liked: liked, action: action });
@@ -201,7 +188,6 @@ const getFollowing = async (req, res) => {
       username: userProfile.following,
       comment: { $exists: false },
     });
-
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -217,7 +203,6 @@ const getComments = async (req, res) => {
 
   try {
     const buzz = await Buzz.find({ comment: parentID });
-
     res.status(200).json(buzz);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -239,7 +224,6 @@ const hasPosted = async (req, res) => {
     if (buzz) {
       let currentDate = new Date().toISOString().substring(0, 10);
       let lastPostedDate = buzz.createdAt.toISOString().substring(0, 10);
-
       res.status(200).json(currentDate === lastPostedDate);
       //return if the user has posted on the current date
     } else {

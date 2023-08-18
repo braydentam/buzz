@@ -1,26 +1,16 @@
-import { React, useEffect, useState } from "react";
-import Buzzes from "../components/Buzzes";
-import { useNavigate } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { getFollowingBuzzes } from "../api/requests";
-import { useBuzzContext } from "../hooks/useBuzzContext";
-//TODO: Sort and fix import structure to follow a specific ruleset
-// react, react-dom, react-router
-// antd (the ui library)
-// package/third-party imports, such as lodash.
-// project alias imports
-// relative imports
+//Following page displays list of buzzes from followed users
 
-//update follower/following count
+import { React, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useBuzzContext } from "../hooks/useBuzzContext";
+import Buzzes from "../components/Buzzes";
+import { getFollowingBuzzes } from "../api/requests";
+
 const Following = () => {
-  const [error, setError] = useState("");
-  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
   const { id } = useParams();
   const navigate = useNavigate();
-
-  function handleClick(id) {
-    navigate("/buzz/" + id);
-  }
+  const [error, setError] = useState("");
+  const { buzz, dispatch: dispatchBuzz } = useBuzzContext();
 
   useEffect(() => {
     const response = (data) => {
@@ -33,6 +23,10 @@ const Following = () => {
     };
     getFollowingBuzzes(response);
   }, [id, dispatchBuzz]);
+
+  function navigateToBuzz(id) {
+    navigate("/buzz/" + id);
+  }
 
   return (
     <div className="ml-64">
@@ -48,7 +42,7 @@ const Following = () => {
           <Buzzes
             key={b._id}
             onClick={() => {
-              handleClick(b._id);
+              navigateToBuzz(b._id);
             }}
             buzz={b}
             isComment={false}
