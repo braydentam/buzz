@@ -38,6 +38,7 @@ packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
 
 node_modules
+**/node_modules
 package-lock.json
 *.log
 *.gz
@@ -48,6 +49,7 @@ coverage
 benchmarks/graphs
 
 .env
+**/.env
 .env.example
 .env.local
 .env.staging
