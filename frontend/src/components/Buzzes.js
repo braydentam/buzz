@@ -18,6 +18,7 @@ const Buzzes = (props) => {
       setLikeStatus("liked");
     }
   }
+  //TODO: change this to track usernames instead
 
   useEffect(() => {
     buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
