@@ -9,4 +9,18 @@ async function clearCollections() {
   );
 }
 
-module.exports = clearCollections;
+async function dbCleanup() {
+  beforeAll(async () => {
+    await mongoose.connect(process.env.MONGO_URI);
+  });
+
+  beforeEach(async () => {
+    await clearCollections();
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.close();
+  });
+}
+
+module.exports = dbCleanup;

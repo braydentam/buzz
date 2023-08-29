@@ -1,26 +1,28 @@
-const mongoose = require("mongoose");
 const request = require("supertest");
 const { faker } = require("@faker-js/faker");
 const app = require("../server");
-const { fake_user, generateFakeUser } = require("./utils/fakeusers");
-const clearDatabase = require("./utils/clearDatabase");
+const { fake_user, generateFakeUser } = require("./utils/mockdata");
+const dbCleanup = require("./utils/dbCleanup");
 
-require("dotenv").config();
-
-beforeEach(async () => {
-  await mongoose.connect(process.env.MONGO_URI);
-});
-
-beforeEach(async () => {
-  await clearDatabase();
-});
-
-afterEach(async () => {
-  await mongoose.connection.close();
-});
+dbCleanup();
 
 describe("POST /signup", () => {
-  it("matching usernames should fail", async () => {
+  it("missing username should fail", async () => {
+    const res = await request(app).post("/user/signup").send({
+      name: faker.person.fullName(),
+      password: faker.internet.password(),
+    });
+    expect(res.statusCode).toBe(400);
+  });
+  it("missing password should fail", async () => {
+    await generateFakeUser(fake_user);
+    const res = await request(app).post("/user/signup").send({
+      name: faker.person.fullName(),
+      username: faker.internet.userName(),
+    });
+    expect(res.statusCode).toBe(400);
+  });
+  it("existing usernames should fail", async () => {
     await generateFakeUser(fake_user);
     const res = await request(app).post("/user/signup").send({
       name: faker.person.fullName(),
@@ -36,13 +38,27 @@ describe("POST /signup", () => {
       password: faker.internet.password(),
     });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("username");
-    expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty("username", "id", "token");
   });
 });
 
 describe("POST /login", () => {
+  it("missing username should fail", async () => {
+    await generateFakeUser(fake_user);
+    const res = await request(app).post("/user/login").send({
+      name: faker.person.fullName(),
+      password: faker.internet.password(),
+    });
+    expect(res.statusCode).toBe(400);
+  });
+  it("missing password should fail", async () => {
+    await generateFakeUser(fake_user);
+    const res = await request(app).post("/user/login").send({
+      name: faker.person.fullName(),
+      username: faker.internet.userName(),
+    });
+    expect(res.statusCode).toBe(400);
+  });
   it("non-existent username should fail", async () => {
     await generateFakeUser(fake_user);
     const res = await request(app).post("/user/login").send({
@@ -66,8 +82,6 @@ describe("POST /login", () => {
       password: fake_user.password,
     });
     expect(res.statusCode).toBe(200);
-    expect(res.body).toHaveProperty("username");
-    expect(res.body).toHaveProperty("id");
-    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty("username", "id", "token");
   });
 });

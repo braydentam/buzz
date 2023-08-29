@@ -89,7 +89,7 @@ const deleteBuzz = async (req, res) => {
   const userID = req.user._id;
 
   if (!mongoose.Types.ObjectId.isValid(deleteID)) {
-    return res.status(404).json({ error: "No such workout" });
+    return res.status(400).json({ error: "No such workout" });
   }
 
   const originalBuzz = await Buzz.findOne({ _id: deleteID });
@@ -112,9 +112,7 @@ const deleteBuzz = async (req, res) => {
     comment: { $exists: true },
   }).sort({ createdAt: -1 });
   const liked = await Buzz.find({ likes: userID }).sort({ createdAt: -1 });
-  res
-    .status(200)
-    .json({ buzz: buzz, comments: comments, liked: liked });
+  res.status(200).json({ buzz: buzz, comments: comments, liked: liked });
   //returns the updated buzzes, comments, and liked posts after deletion
 };
 
@@ -173,7 +171,7 @@ const likeBuzz = async (req, res) => {
     res
       .status(200)
       .json({ buzz: buzz, comment: comments, liked: liked, action: action });
-      //returns the updated buzzes, comments, and liked posts after liking/unliking
+    //returns the updated buzzes, comments, and liked posts after liking/unliking
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
