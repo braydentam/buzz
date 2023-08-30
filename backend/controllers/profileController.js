@@ -82,8 +82,9 @@ const getFollowers = async (req, res) => {
 };
 
 const search = async (req, res) => {
-  const { query } = req.body;
-  if (!query) res.status(400).json({ error: "No Search Key" });
+  var { query } = req.body;
+  if (!query) return res.status(400).json({ error: "No Search Key" });
+  query = query.toLowerCase();
   try {
     let data = await Profile.find(
       {

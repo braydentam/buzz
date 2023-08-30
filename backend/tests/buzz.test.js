@@ -3,9 +3,11 @@ const { faker } = require("@faker-js/faker");
 const app = require("../server");
 const {
   fake_user,
+  fake_user_two,
   fake_buzz,
   generateFakeUser,
   generateFakeBuzz,
+  generateFakeComment,
 } = require("./utils/mockdata");
 const dbCleanup = require("./utils/dbCleanup");
 const Buzz = require("../models/buzzModel");
@@ -83,7 +85,48 @@ describe("GET /getByUsername", () => {
   });
 });
 
-//TODO: do get following, get comments, like, as well as comment cases
+describe("GET /getFollowing", () => {
+  it("if following zero users, should successfully return nothing", async () => {
+    const res = await request(app)
+      .get("/buzz/getFollowing")
+      .set("Authorization", `Bearer ${authToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(0);
+  });
+  it("if following users, should successfully return following buzzes", async () => {
+    authToken = await generateFakeUser(fake_user_two);
+    await generateFakeBuzz(fake_buzz);
+    await request(app)
+      .post("/profile/follow")
+      .send({ followUsername: fake_user.username })
+      .set("Authorization", `Bearer ${authToken}`);
+    const res = await request(app)
+      .get("/buzz/getFollowing")
+      .set("Authorization", `Bearer ${authToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBeGreaterThan(0);
+  });
+});
+
+describe("GET /getComments", () => {
+  it("if no comments, successfully return no comments", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    const res = await request(app)
+      .get("/buzz/getComments/" + buzz._id)
+      .set("Authorization", `Bearer ${authToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBe(0);
+  });
+  it("successfully retrieve comments", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    await generateFakeComment(fake_buzz, buzz._id);
+    const res = await request(app)
+      .get("/buzz/getComments/" + buzz._id)
+      .set("Authorization", `Bearer ${authToken}`);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.length).toBeGreaterThan(0);
+  });
+});
 
 describe("GET /hasPosted", () => {
   it("if a user has not posted within 24hrs, it should successfully return false", async () => {
@@ -125,6 +168,99 @@ describe("POST /create", () => {
       "message",
       "likes"
     );
+  });
+  it("successfully create a comment", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    const res = await request(app)
+      .post("/buzz/create")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        message: faker.word.words(),
+        comment: buzz._id,
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty(
+      "userID",
+      "name",
+      "username",
+      "message",
+      "likes",
+      "comment"
+    );
+  });
+});
+
+describe("POST /like", () => {
+  it("invalid liking of a buzz should fail", async () => {
+    const res = await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: faker.string.alpha(15),
+      });
+    expect(res.statusCode).toBe(400);
+  });
+  it("successfully like a buzz", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    const res = await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: buzz._id,
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("buzz", "comment", "liked", "action");
+    expect(res.body["action"]).toBe("liked");
+  });
+  it("successfully like a comment", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    const comment = await generateFakeComment(fake_buzz, buzz._id);
+    const res = await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: comment._id,
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("buzz", "comment", "liked", "action");
+    expect(res.body["action"]).toBe("liked");
+  });
+  it("successfully unlike a buzz", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: buzz._id,
+      });
+    const res = await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: buzz._id,
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("buzz", "comment", "liked", "action");
+    expect(res.body["action"]).toBe("unliked");
+  });
+  it("successfully unlike a comment", async () => {
+    const buzz = await generateFakeBuzz(fake_buzz);
+    const comment = await generateFakeComment(fake_buzz, buzz._id);
+    await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: comment._id,
+      });
+    const res = await request(app)
+      .post("/buzz/like")
+      .set("Authorization", `Bearer ${authToken}`)
+      .send({
+        likeID: comment._id,
+      });
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("buzz", "comment", "liked", "action");
+    expect(res.body["action"]).toBe("unliked");
   });
 });
 

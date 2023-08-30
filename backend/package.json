@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "npm run test:auth && npm run test:buzz",
+    "test": "npm run test:auth && npm run test:profile && npm run test:buzz",
     "test:auth": "cross-env NODE_ENV=test jest ./tests/auth.test.js --testTimeout=5000 --verbose --colors --runInBand",
     "test:buzz": "cross-env NODE_ENV=test jest ./tests/buzz.test.js --testTimeout=5000 --verbose --colors --runInBand",
+    "test:profile": "cross-env NODE_ENV=test jest ./tests/profile.test.js --testTimeout=5000 --verbose --colors --runInBand",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },

@@ -15,6 +15,13 @@ const fake_user = {
   id: null,
 };
 
+const fake_user_two = {
+  name: faker.person.fullName(),
+  username: faker.internet.userName(),
+  password: "test",
+  id: null,
+};
+
 const fake_buzz = {
   userID: fake_user.id,
   name: fake_user.name,
@@ -52,4 +59,17 @@ const generateFakeBuzz = async (buzz_info) => {
   return buzz;
 };
 
-module.exports = { fake_user, fake_buzz, generateFakeUser, generateFakeBuzz };
+const generateFakeComment = async (buzz_info, parent_id) => {
+  const buzz = new Buzz({
+    userID: buzz_info.userID,
+    name: buzz_info.name,
+    username: buzz_info.username,
+    message: buzz_info.message,
+    comment: parent_id
+  });
+  Promise.all([buzz.save()]);
+  return buzz;
+};
+
+module.exports = { fake_user, fake_user_two, fake_buzz, generateFakeUser, generateFakeBuzz, generateFakeComment };
+//TODO: fix namings for tests, and describe/it messages

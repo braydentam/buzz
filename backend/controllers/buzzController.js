@@ -182,6 +182,7 @@ const getFollowing = async (req, res) => {
 
   try {
     const userProfile = await Profile.findOne({ user: userID });
+
     const buzz = await Buzz.find({
       username: userProfile.following,
       comment: { $exists: false },
