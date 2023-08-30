@@ -41,13 +41,13 @@ const UserModal = (user) => {
       {user.showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
-            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-1/2 bg-white outline-none focus:outline-none">
+            <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-1/2 bg-[#171e1d] outline-none">
               <button
                 type="button"
                 onClick={() => {
                   user.setShowModal(false);
                 }}
-                className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                className="absolute top-3 right-2.5 bg-transparent hover:bg-[#3A3A3A] rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
               >
                 <svg
                   className="w-3 h-3"
@@ -57,7 +57,7 @@ const UserModal = (user) => {
                   viewBox="0 0 14 14"
                 >
                   <path
-                    stroke="currentColor"
+                    stroke="white"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
@@ -67,10 +67,10 @@ const UserModal = (user) => {
                 <span className="sr-only">Close modal</span>
               </button>
               <div className="px-6 py-6 lg:px-8">
-                <h3 className="mb-4 text-xl font-medium text-gray-900">
+                <h3 className="mb-4 text-xl font-medium">
                   {user.type}
                 </h3>
-                <ul className="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+                <ul className="max-w-md space-y-1 list-disc list-inside dark:text-gray-400">
                   {userList &&
                     userList.map((user) => (
                       <li
@@ -78,7 +78,7 @@ const UserModal = (user) => {
                         onClick={() => {
                           navigateToProfile(user);
                         }}
-                        className="hover:text-blue-500 hover:underline"
+                        className="hover:text-blue-300 hover:underline"
                       >
                         {user}
                       </li>

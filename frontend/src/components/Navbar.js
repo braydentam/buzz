@@ -31,16 +31,16 @@ const Navbar = () => {
   return (
     <div>
       <div className="">
-        <div className="fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
-          <div className="flex items-center justify-center h-14 border-b">
+        <div className="fixed flex flex-col top-0 left-0 w-64 h-full bg-[#5b605f] border-r border-gray-500">
+          <div className="flex items-center h-14">
             <div>
-              <h1 className="text-5xl font-extrabold">Buzz</h1>
+              <h1 className="text-2xl font-bold ml-5">Buzz</h1>
             </div>
           </div>
           {user && user.username && (
             <Fragment>
-              <div className="flex items-center justify-center h-14 border-b">
-                <h2 className="text-center text-2xl font-bold text-gray-900">
+              <div className="flex items-center h-2">
+                <h2 className="text-l font-normla ml-5">
                   Logged in as: {user.username}
                 </h2>
               </div>
@@ -51,22 +51,14 @@ const Navbar = () => {
             <ul className="flex flex-col py-4 space-y-1">
               {user && (
                 <Fragment>
-                  <li className="px-5">
-                    <div className="flex flex-row items-center h-8">
-                      <div className="text-sm font-light tracking-wide text-gray-500">
-                        Menu
-                      </div>
-                    </div>
-                  </li>
-
                   <Link to="/">
                     <li>
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4">
                           <svg
                             className="w-5 h-5"
                             fill="none"
-                            stroke="currentColor"
+                            stroke="white"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -78,7 +70,7 @@ const Navbar = () => {
                             ></path>
                           </svg>
                         </span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate text-white">
                           Feed
                         </span>
                       </span>
@@ -86,12 +78,12 @@ const Navbar = () => {
                   </Link>
                   <Link to="/following">
                     <li>
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4">
                           <svg
                             className="w-5 h-5"
                             fill="none"
-                            stroke="currentColor"
+                            stroke="white"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -103,24 +95,24 @@ const Navbar = () => {
                             ></path>
                           </svg>
                         </span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate">
                           Following
                         </span>
                       </span>
                     </li>
                   </Link>
                   <li>
-                    <div className="pl-5 inline-flex justify-center items-center ">
+                    <div className="pl-5 inline-flex justify-center items-center">
                       <input
                         type="text"
                         id="small-input"
                         onChange={(e) => setQuery(e.target.value)}
-                        className="block w-full text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        className="block w-full rounded-lg text-white bg-[#2c3332] sm:text-xs placeholder-white"
                         placeholder="Search Profile"
                       ></input>
                       <span className="ml-4">
                         <button
-                          className="flex p-1 rounded-lg items-center outline outline-offset-0 bg-blue-400"
+                          className="flex p-1 rounded-lg items-center outline outline-offset-0 outline-[#8bc5bb] bg-[#8bc5bb] hover:bg-[#a3d0c8] "
                           onClick={() => {
                             handleSearch();
                           }}
@@ -128,7 +120,7 @@ const Navbar = () => {
                           <svg
                             className="w-5 h-5"
                             fill="none"
-                            stroke="currentColor"
+                            stroke="white"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -138,21 +130,14 @@ const Navbar = () => {
                       </span>
                     </div>
                   </li>
-                  <li className="px-5">
-                    <div className="flex flex-row items-center h-8">
-                      <div className="text-sm font-light tracking-wide text-gray-500">
-                        Profile
-                      </div>
-                    </div>
-                  </li>
                   <li>
                     <Link to={userProfileURL}>
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4">
                           <svg
                             className="w-5 h-5"
                             fill="none"
-                            stroke="currentColor"
+                            stroke="white"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -164,7 +149,7 @@ const Navbar = () => {
                             ></path>
                           </svg>
                         </span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate">
                           My Buzzes
                         </span>
                       </span>
@@ -177,12 +162,12 @@ const Navbar = () => {
                       }}
                       className="w-full"
                     >
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4">
                           <svg
                             className="w-5 h-5"
                             fill="none"
-                            stroke="currentColor"
+                            stroke="white"
                             viewBox="0 0 24 24"
                             xmlns="http://www.w3.org/2000/svg"
                           >
@@ -194,7 +179,7 @@ const Navbar = () => {
                             ></path>
                           </svg>
                         </span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate">
                           Logout
                         </span>
                       </span>
@@ -209,18 +194,11 @@ const Navbar = () => {
               )}
               {!user && (
                 <Fragment>
-                  <li className="px-5">
-                    <div className="flex flex-row items-center h-8">
-                      <div className="text-sm font-light tracking-wide text-gray-500">
-                        New / Returning User
-                      </div>
-                    </div>
-                  </li>
                   <Link to="/signup">
                     <li>
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4"></span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate">
                           Signup
                         </span>
                       </span>
@@ -228,9 +206,9 @@ const Navbar = () => {
                   </Link>
                   <Link to="/login">
                     <li>
-                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                      <span className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-[4B4B4B] border-l-4 border-transparent hover:border-[#a3d0c8] hover:rounded pr-6">
                         <span className="inline-flex justify-center items-center ml-4"></span>
-                        <span className="ml-2 text-sm tracking-wide truncate">
+                        <span className="ml-3 text-md tracking-wide truncate">
                           Login
                         </span>
                       </span>

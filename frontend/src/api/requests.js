@@ -65,6 +65,7 @@ export const getExplore = async (res) => {
       res(response.data);
     })
     .catch(function (error) {
+      console.log(error);
       res({ error: error });
     });
 };

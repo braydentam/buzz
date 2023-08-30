@@ -18,7 +18,7 @@ const signupUser = async (req, res) => {
       name: name,
       username: username,
     });
-    Promise.all([profile.save()]);
+    Promise.all([user.save(), profile.save()]);
     res.status(200).json({ username, id, token });
   } catch (error) {
     res.status(400).json({ error: error.message });

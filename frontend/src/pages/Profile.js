@@ -18,7 +18,7 @@ const Profile = () => {
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
   const [followStatus, setFollowStatus] = useState("");
-  
+
   function isFollowed(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["username"]) {
       setFollowStatus("followed");
@@ -27,7 +27,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (profile && profile.followers && profile.followers.length > 0) {
-        profile.followers.map((profile_id) => isFollowed(profile_id));
+      profile.followers.map((profile_id) => isFollowed(profile_id));
     }
     //checks if a user is following this profile
   }, [dispatchProfile, profile]);
@@ -91,8 +91,8 @@ const Profile = () => {
     <div className="ml-64">
       {buzz && (
         <div>
-          <div className="block flex items-center justify-center">
-            <h1 className="mb-4 mt-5 pr-5 text-center font-extrabold leading-none tracking-tight text-gray-900 text-5xl">
+          <div className="block flex items-center">
+            <h1 className="mb-4 text-2xl mt-5 ml-10 tracking-wide font-bold leading-none tracking-tight">
               {username}'s {title}
             </h1>
             {followStatus === "followed"
@@ -102,7 +102,7 @@ const Profile = () => {
                     onClick={(e) => {
                       handleFollow();
                     }}
-                    className="bg-blue-500 mt-3 text-3xl hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    className="bg-[#73b9ae] hover:bg-[#8bc5bb] font-bold ml-5 py-2 px-4 rounded-lg"
                   >
                     Unfollow
                   </button>
@@ -113,18 +113,18 @@ const Profile = () => {
                     onClick={(e) => {
                       handleFollow();
                     }}
-                    className="bg-blue-500 mt-3 text-3xl hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+                    className="bg-[#73b9ae] hover:bg-[#8bc5bb] font-bold ml-5 py-2 px-4 rounded-lg"
                   >
                     Follow
                   </button>
                 )}
           </div>
-          <div className="flex justify-center">
+          <div className="flex ml-10 space-x-4">
             <button
               onClick={() => {
                 setTitle("Posts");
               }}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+              className="bg-[#434948] hover:bg-[#747978] font-bold py-2 px-4 rounded-lg"
             >
               Posts
             </button>
@@ -132,7 +132,7 @@ const Profile = () => {
               onClick={() => {
                 setTitle("Comments");
               }}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+              className="bg-[#434948] hover:bg-[#747978] font-bold py-2 px-4 rounded-lg"
             >
               Comments
             </button>
@@ -140,27 +140,21 @@ const Profile = () => {
               onClick={() => {
                 setTitle("Liked Buzzes");
               }}
-              className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+              className="bg-[#434948] hover:bg-[#747978] font-bold py-2 px-4 rounded-lg"
             >
               Liked Buzzes
             </button>
           </div>
           {profile && (
-            <div className="block flex items-center justify-center">
+            <div className="block flex items-center">
               <button onClick={() => setShowFollowers(true)}>
-                <h4 className="pr-5 text-2xl font-bold dark:text-white">
-                  <span className="hover:text-blue-500 hover:underline">
-                    Followers:
-                  </span>{" "}
-                  {profile.followers ? profile.followers.length : 0}
+                <h4 className="bg-[#434948] hover:bg-[#747978] py-2 px-4 rounded-lg mb-4 text-xl mt-5 ml-10 tracking-wide font-bold leading-none tracking-tight">
+                  Followers: {profile.followers ? profile.followers.length : 0}
                 </h4>
               </button>
               <button onClick={() => setShowFollowing(true)}>
-                <h4 className="text-2xl font-bold dark:text-white">
-                  <span className="hover:text-blue-500 hover:underline">
-                    Following:
-                  </span>{" "}
-                  {profile.following ? profile.following.length : 0}
+                <h4 className="bg-[#434948] hover:bg-[#747978] py-2 px-4 rounded-lg mb-4 text-xl mt-5 ml-10 tracking-wide font-bold leading-none tracking-tight">
+                  Following: {profile.following ? profile.following.length : 0}
                 </h4>
               </button>
             </div>

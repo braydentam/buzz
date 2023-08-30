@@ -32,7 +32,7 @@ const Following = () => {
     <div className="ml-64">
       {buzz && (
         <>
-          <h1 className="mb-4 text-4xl mt-5 text-center font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 text-2xl mt-5 ml-10 tracking-wide font-bold leading-none tracking-tight">
             Following
           </h1>
         </>

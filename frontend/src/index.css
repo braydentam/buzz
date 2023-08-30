@@ -9,9 +9,21 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #171e1d;
+  color: white;
+  font-family: 'DM Sans';
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+div.error {
+  padding: 10px;
+  background: #ffefef;
+  border: 1px solid red;
+  color: red;
+  border-radius: 4px;
+  margin: 20px 0;
 }

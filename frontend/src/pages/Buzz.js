@@ -14,7 +14,7 @@ const Buzz = () => {
   const [error, setError] = useState("");
   const [buzz, setBuzz] = useState(null);
   const [likeStatus, setLikeStatus] = useState("");
-  
+
   function isLiked(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
       setLikeStatus("liked");
@@ -107,7 +107,7 @@ const Buzz = () => {
     <div>
       {buzz && (
         <div className="ml-64">
-          <div className="block m-10 rounded-md bg-white p-6 pb-20 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]">
+          <div className="block m-10 rounded-md bg-[#2c3332] p-6">
             <button
               onClick={(e) => {
                 handleProfile();
@@ -115,16 +115,16 @@ const Buzz = () => {
               }}
             >
               <span className="">
-                <div className="pr-1 text-lg text-xl font-medium leading-tight text-neutral-800 hover:text-blue-500 hover:underline">
+                <div className="pr-1 text-xl text-white font-medium leading-tight hover:text-blue-300 hover:underline">
                   {buzz.name}
                 </div>
               </span>
             </button>
-            <span className="text-lg text-xl font-medium leading-tight text-gray-400">
+            <span className="text-xl font-medium leading-tight text-gray-200">
               {" "}
               @{buzz.username}
             </span>
-            <p className="mb-4 text-base text-neutral-600">{buzz.message}</p>
+            <p className="mb-5 mt-1 text-base">{buzz.message}</p>
             <div className="flex items-start">
               <button
                 onClick={(e) => {
@@ -135,8 +135,8 @@ const Buzz = () => {
                 <div
                   className={
                     likeStatus === "liked"
-                      ? "flex p-1 rounded-lg items-center outline outline-offset-0 outline-red-500 bg-red-500 hover:drop-shadow-lg"
-                      : "flex p-1 rounded-lg items-center outline outline-offset-0 outline-red-500 bg-white hover:drop-shadow-lg"
+                      ? "flex rounded-lg items-center p-2 bg-[#8bc5bb] hover:drop-shadow-lg hover:outline hover:outline-offset-0"
+                      : "flex rounded-lg items-center p-2 bg-white hover:drop-shadow-lg hover:outline hover:outline-offset-0 hover:outline-[#8bc5bb]"
                   }
                 >
                   <svg
@@ -144,7 +144,7 @@ const Buzz = () => {
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
-                    stroke={likeStatus === "liked" ? "white" : "red"}
+                    stroke={likeStatus === "liked" ? "white" : "#8bc5bb"}
                     className="w-5 h-5"
                   >
                     <path
@@ -156,8 +156,8 @@ const Buzz = () => {
                   <div
                     className={
                       likeStatus === "liked"
-                        ? "text-white text-lg ml-15"
-                        : "text-red-500 text-lg ml-15"
+                        ? "text-white text-lg ml-1"
+                        : "text-[#8bc5bb] text-lg ml-1"
                     }
                   >
                     {buzz.likes ? buzz.likes.length : 0}
@@ -168,7 +168,7 @@ const Buzz = () => {
               {buzz.userID ===
                 JSON.parse(localStorage.getItem("user"))["id"] && (
                 <button
-                  className="flex flex p-1 rounded-lg items-center outline outline-offset-0 bg-red-500 hover:shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)]"
+                  className="flex p-2 rounded-lg items-center bg-red-500 hover:outline hover:outline-offset-0"
                   onClick={(e) => {
                     handleDelete();
                     e.stopPropagation();
@@ -196,7 +196,7 @@ const Buzz = () => {
 
       <div className="ml-64">
         {comment != null && comment.length > 0 && (
-          <h1 className="mb-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
+          <h1 className="mb-4 text-2xl mt-5 ml-10 tracking-wide font-bold leading-none tracking-tight">
             Comments
           </h1>
         )}
