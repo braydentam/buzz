@@ -126,7 +126,6 @@ const likeBuzz = async (req, res) => {
 
   try {
     const profile = await Profile.findOne({ user: userID });
-    console.log(userID);
     var action = "";
     if (profile.hasLiked(likeID)) {
       await Buzz.findOneAndUpdate(

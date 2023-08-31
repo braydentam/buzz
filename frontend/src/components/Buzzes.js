@@ -11,7 +11,6 @@ const Buzzes = (props) => {
   const { dispatch: dispatchBuzz } = useBuzzContext();
   const [error, setError] = useState("");
   const [likeStatus, setLikeStatus] = useState("");
-  
 
   function isLiked(id) {
     if (id === JSON.parse(localStorage.getItem("user"))["id"]) {
@@ -39,7 +38,15 @@ const Buzzes = (props) => {
       } else {
         dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
         dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
-        dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+        if (!props.isLike) {
+          dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+        }
+        if (data["action"] === "unliked") {
+          buzz.likes.length = buzz.likes.length - 1;
+        }
+        if (data["action"] === "liked") {
+          dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+        }
         setLikeStatus(data["action"]);
         setError("");
       }
