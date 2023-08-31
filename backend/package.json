@@ -9,7 +9,7 @@
     "test:buzz": "cross-env NODE_ENV=test jest ./tests/buzz.test.js --testTimeout=5000 --verbose --colors --runInBand",
     "test:profile": "cross-env NODE_ENV=test jest ./tests/profile.test.js --testTimeout=5000 --verbose --colors --runInBand",
     "start": "set NODE_OPTIONS=--openssl-legacy-provider && netlify-lambda serve src",
-    "build": "./node_modules/.bin/netlify-lambda build src",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && ./node_modules/.bin/netlify-lambda build src",
     "dev": "nodemon server.js"
   },
   "keywords": [],
