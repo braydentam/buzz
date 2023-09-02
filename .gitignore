@@ -54,6 +54,5 @@ benchmarks/graphs
 .env.local
 .env.staging
 
-frontend/src/api/urls.js
 # Local Netlify folder
 .netlify
