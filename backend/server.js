@@ -8,6 +8,7 @@ var upload = multer();
 const userRoutes = require("./routes/userRoutes");
 const buzzRoutes = require("./routes/buzzRoutes");
 const profileRoutes = require("./routes/profileRoutes");
+const rateLimiter = require("./middleware/rateLimiter");
 
 const app = express();
 
@@ -15,11 +16,13 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
 app.use(cors());
 app.use(express.json());
 app.use(upload.array());
 app.use(express.static("public"));
 
+app.use(rateLimiter);
 app.use("/user", userRoutes);
 app.use("/buzz", buzzRoutes);
 app.use("/profile", profileRoutes);

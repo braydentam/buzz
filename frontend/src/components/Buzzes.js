@@ -44,10 +44,10 @@ const Buzzes = (props) => {
           }
         }
         if (data["action"] === "unliked") {
-          if(buzz) buzz.likes.length = buzz.likes.length - 1;
+          if(buzz && buzz.likes.length) buzz.likes.length = buzz.likes.length - 1;
         }
         if (data["action"] === "liked") {
-          if(buzz) buzz.likes.length = buzz.likes.length + 1;
+          if(buzz && buzz.likes.length) buzz.likes.length = buzz.likes.length + 1;
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
         }
         setLikeStatus(data["action"]);

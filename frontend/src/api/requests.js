@@ -160,7 +160,7 @@ export const like = async (req, res) => {
     })
     .catch(function (error) {
       console.log(error);
-      res({ error: error.response.data.error });
+      res({ error: error });
     });
 };
 

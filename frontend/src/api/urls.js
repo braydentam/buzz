@@ -1,5 +1,5 @@
-const DOMAIN = process.env.REACT_APP_DOMAIN;
-//const DOMAIN = "http://localhost:4000";
+// const DOMAIN = process.env.REACT_APP_DOMAIN;
+const DOMAIN = "http://localhost:4000";
 
 //AUTHENTICATION
 export const LOGIN = DOMAIN + "/user/login";
