@@ -10,6 +10,9 @@ const Signup = () => {
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
+    alert(
+      "Because I don't have SSL/https, this website only works on Chrome\nSorry for the inconvenience\nSteps:\nClick the (i) next to the url\nClick site settings\nScroll down to Insecure content\nAllow\nClose window (reload might not work)\nGo back to this website\nEnjoy!"
+    );
     let reqData = {
       name: name,
       username: username,

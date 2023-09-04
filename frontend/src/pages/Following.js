@@ -46,6 +46,7 @@ const Following = () => {
             }}
             buzz={b}
             isComment={false}
+            isFollowing={true}
           />
         ))}
       {error && <div className="error">{error}</div>}

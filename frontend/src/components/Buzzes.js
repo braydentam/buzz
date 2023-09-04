@@ -36,15 +36,18 @@ const Buzzes = (props) => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
-        dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
-        if (!props.isLike) {
-          dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+        if (!props.isFollowing) {
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
+          dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
+          if (!props.isLike) {
+            dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
+          }
         }
         if (data["action"] === "unliked") {
-          buzz.likes.length = buzz.likes.length - 1;
+          if(buzz) buzz.likes.length = buzz.likes.length - 1;
         }
         if (data["action"] === "liked") {
+          if(buzz) buzz.likes.length = buzz.likes.length + 1;
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
         }
         setLikeStatus(data["action"]);
