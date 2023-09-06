@@ -172,7 +172,6 @@ const Profile = () => {
                   navigateToBuzz(b._id);
                 }}
                 buzz={b}
-                isComment={false}
               />
             );
           return null;
@@ -202,7 +201,6 @@ const Profile = () => {
               navigateToBuzz(likedBuzz._id);
             }}
             buzz={likedBuzz}
-            isComment={false}
             isLike={true}
           />
         ))}

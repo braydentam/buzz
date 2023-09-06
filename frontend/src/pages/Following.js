@@ -45,7 +45,6 @@ const Following = () => {
               navigateToBuzz(b._id);
             }}
             buzz={b}
-            isComment={false}
             isFollowing={true}
           />
         ))}

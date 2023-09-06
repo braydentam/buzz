@@ -64,7 +64,6 @@ const Home = () => {
               navigateToBuzz(b._id);
             }}
             buzz={b}
-            isComment={false}
           />
         ))}
       {error && <div className="error">{error}</div>}

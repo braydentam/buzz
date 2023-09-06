@@ -208,7 +208,7 @@ const Buzz = () => {
                 navigateToBuzz(buzz._id);
               }}
               buzz={buzz}
-              isComment={true}
+              isCommentSection={true}
             />
           ))}
       </div>

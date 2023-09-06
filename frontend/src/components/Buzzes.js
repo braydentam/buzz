@@ -38,16 +38,20 @@ const Buzzes = (props) => {
       } else {
         if (!props.isFollowing) {
           dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
-          dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
+          if (!props.isCommentSection) {
+            dispatchBuzz({ type: "SET_COMMENT", payload: data["comment"] });
+          }
           if (!props.isLike) {
             dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
           }
         }
         if (data["action"] === "unliked") {
-          if(buzz && buzz.likes.length) buzz.likes.length = buzz.likes.length - 1;
+          if (buzz && buzz.likes.length)
+            buzz.likes.length = buzz.likes.length - 1;
         }
         if (data["action"] === "liked") {
-          if(buzz && buzz.likes.length) buzz.likes.length = buzz.likes.length + 1;
+          if (buzz && buzz.likes.length)
+            buzz.likes.length = buzz.likes.length + 1;
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
         }
         setLikeStatus(data["action"]);
@@ -73,6 +77,9 @@ const Buzzes = (props) => {
           dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });
           dispatchBuzz({ type: "SET_COMMENT", payload: data["comments"] });
+        } else if (props.isCommentSection) {
+          dispatchBuzz({ type: "DELETE_COMMENT", payload: buzz });
+          dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
         } else {
           dispatchBuzz({ type: "SET_BUZZ", payload: data["buzz"] });
           dispatchBuzz({ type: "SET_LIKED", payload: data["liked"] });

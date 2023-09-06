@@ -35,6 +35,10 @@ export const buzzReducer = (state, action) => {
         ...state,
         liked: [action.payload, ...state.liked],
       };
+    case "DELETE_COMMENT":
+      return {
+        comment: state.comment.filter((c) => c._id !== action.payload._id),
+      };
     default:
       return state;
   }
