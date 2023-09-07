@@ -31,8 +31,8 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     if (process.env.NODE_ENV !== "test") {
-      app.listen(process.env.PORT, () => {
-        console.log("connected to db & listening on port", process.env.PORT);
+      app.listen(process.argv[2] || process.env.PORT, () => {
+        console.log("connected to db & listening on port", process.argv[2] || process.env.PORT);
       });
       app.get("/", (req, res) => res.json("Buzz Server Online"));
     }
