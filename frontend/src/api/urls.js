@@ -23,5 +23,3 @@ export const GETFOLLOWERS = DOMAIN + "/profile/getFollowers";
 export const GETFOLLOWING = DOMAIN + "/profile/getFollowing";
 export const SEARCH = DOMAIN + "/profile/search";
 
-//TODO: SORT THESE (and properly space), AND SORT REQUESTS.JS TO FOLLOW
-//TODO: https://blog.dreamfactory.com/best-practices-for-naming-rest-api-endpoints/

@@ -7,6 +7,7 @@ const dbCleanup = require("./utils/dbCleanup");
 dbCleanup();
 
 describe("POST /signup", () => {
+  console.log("REMINDER: HAVE REDIS SERVER RUNNING WHEN RUNNING TESTS");
   it("missing username should fail", async () => {
     const res = await request(app).post("/user/signup").send({
       name: faker.person.fullName(),
@@ -59,19 +60,19 @@ describe("POST /login", () => {
     });
     expect(res.statusCode).toBe(400);
   });
-  it("non-existent username should fail", async () => {
+  it("invalid username should fail", async () => {
     await generateFakeUser(fake_user);
     const res = await request(app).post("/user/login").send({
-      username: "nonexistent-username",
+      username: "invalid-username",
       password: fake_user.password,
     });
     expect(res.statusCode).toBe(400);
   });
-  it("wrong password should fail", async () => {
+  it("invalid password should fail", async () => {
     await generateFakeUser(fake_user);
     const res = await request(app).post("/user/login").send({
       username: fake_user.username,
-      password: "wrong-password",
+      password: "invalid-password",
     });
     expect(res.statusCode).toBe(400);
   });

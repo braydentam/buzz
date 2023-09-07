@@ -21,11 +21,12 @@ beforeEach(async () => {
 });
 
 describe("GET /getAll", () => {
+  console.log("REMINDER: HAVE REDIS SERVER RUNNING WHEN RUNNING TESTS");
   it("missing authentication should fail", async () => {
     const res = await request(app).get("/buzz/getAll");
     expect(res.statusCode).toBe(401);
   });
-  it("successfully retrieve buzzes even if there are none", async () => {
+  it("successfully retrieve buzzes when there are none", async () => {
     const res = await request(app)
       .get("/buzz/getAll")
       .set("Authorization", `Bearer ${authToken}`);
@@ -42,19 +43,19 @@ describe("GET /getAll", () => {
 });
 
 describe("GET /getById", () => {
-  it("missing id should fail", async () => {
+  it("missing ID should fail", async () => {
     const res = await request(app)
       .get("/buzz/getById")
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(404);
   });
-  it("invalid id should fail", async () => {
+  it("invalid ID should fail", async () => {
     const res = await request(app)
       .get("/buzz/getById/0")
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(400);
   });
-  it("successfully retrieve a valid buzz by id", async () => {
+  it("successfully retrieve a buzz by ID", async () => {
     const buzz = await generateFakeBuzz(fake_buzz);
     const res = await request(app)
       .get("/buzz/getById/" + buzz._id)
@@ -76,7 +77,7 @@ describe("GET /getByUsername", () => {
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(400);
   });
-  it("successfully retrieve a valid buzz by username", async () => {
+  it("successfully retrieve a buzz by username", async () => {
     await generateFakeBuzz(fake_buzz);
     const res = await request(app)
       .get("/buzz/getByUsername/" + fake_user.username)
@@ -86,14 +87,14 @@ describe("GET /getByUsername", () => {
 });
 
 describe("GET /getFollowing", () => {
-  it("if following zero users, should successfully return nothing", async () => {
+  it("when following no users, successfully return no users", async () => {
     const res = await request(app)
       .get("/buzz/getFollowing")
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(200);
     expect(res.body.length).toBe(0);
   });
-  it("if following users, should successfully return following buzzes", async () => {
+  it("when following users, successfully return following buzzes", async () => {
     authToken = await generateFakeUser(fake_user_two);
     await generateFakeBuzz(fake_buzz);
     await request(app)
@@ -109,7 +110,7 @@ describe("GET /getFollowing", () => {
 });
 
 describe("GET /getComments", () => {
-  it("if no comments, successfully return no comments", async () => {
+  it("when no comments, successfully return no comments", async () => {
     const buzz = await generateFakeBuzz(fake_buzz);
     const res = await request(app)
       .get("/buzz/getComments/" + buzz._id)
@@ -129,14 +130,14 @@ describe("GET /getComments", () => {
 });
 
 describe("GET /hasPosted", () => {
-  it("if a user has not posted within 24hrs, it should successfully return false", async () => {
+  it("when a user has not posted within 24hrs, successfully return false", async () => {
     const res = await request(app)
       .get("/buzz/hasPosted")
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(200);
     expect(res.body).toBe(false);
   });
-  it("if a user has posted within 24hrs, it should successfully return true", async () => {
+  it("when a user has posted within 24hrs, successfully return true", async () => {
     await generateFakeBuzz(fake_buzz);
     const res = await request(app)
       .get("/buzz/hasPosted")
@@ -265,7 +266,7 @@ describe("POST /like", () => {
 });
 
 describe("DELETE /delete", () => {
-  it("non existent delete should fail", async () => {
+  it("invalid delete should fail", async () => {
     const res = await request(app)
       .delete("/buzz/delete")
       .send({

@@ -17,6 +17,7 @@ beforeEach(async () => {
 });
 
 describe("GET /getProfile", () => {
+  console.log("REMINDER: HAVE REDIS SERVER RUNNING WHEN RUNNING TESTS");
   it("missing username should fail", async () => {
     const res = await request(app)
       .get("/profile/getProfile")
@@ -45,13 +46,13 @@ describe("GET /getFollowing", () => {
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(400);
   });
-  it("successfully retrieve following profiles by username even if non followed", async () => {
+  it("when no users followed, successfully retrieve zero following profiles", async () => {
     const res = await request(app)
       .get("/profile/getFollowing/" + fake_user.username)
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(200);
   });
-  it("successfully retrieve following profiles by username if following people", async () => {
+  it("when following users, successfully retrieve following profiles", async () => {
     await generateFakeUser(fake_user_two);
     await request(app)
       .post("/profile/follow/")
@@ -66,19 +67,19 @@ describe("GET /getFollowing", () => {
 });
 
 describe("GET /getFollowers", () => {
-  it("invalid username should be fail", async () => {
+  it("invalid username should fail", async () => {
     const res = await request(app)
       .get("/profile/getFollowers/invalid_username")
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(400);
   });
-  it("successfully retrieve follower profiles by username even if 0 followers", async () => {
+  it("when a user has 0 followers, successfully retrieve zero follower profiles", async () => {
     const res = await request(app)
       .get("/profile/getFollowers/" + fake_user.username)
       .set("Authorization", `Bearer ${authToken}`);
     expect(res.statusCode).toBe(200);
   });
-  it("successfully retrieve follower profiles by username if followed", async () => {
+  it("when a user has followers, successfully retrieve follower profiles", async () => {
     await generateFakeUser(fake_user_two);
     await request(app)
       .post("/profile/follow/")
@@ -104,7 +105,7 @@ describe("POST /follow", () => {
     expect(res.body).toHaveProperty("action");
     expect(res.body["action"]).toBe("followed");
   });
-  it("successfully unfollow a user after following", async () => {
+  it("successfully unfollow a user", async () => {
     await generateFakeUser(fake_user_two);
     await request(app)
       .post("/profile/follow/")
@@ -122,7 +123,7 @@ describe("POST /follow", () => {
 });
 
 describe("POST /search", () => {
-  it("if there is no search query, it should fail", async () => {
+  it("when there is no query, search should fail", async () => {
     await generateFakeUser(fake_user_two);
     const res = await request(app)
       .post("/profile/search")
@@ -138,7 +139,7 @@ describe("POST /search", () => {
     expect(res.statusCode).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
   });
-  it("successfully return no matching users if query doesn't match any users", async () => {
+  it("when a query doesn't match any users, successfully return no matching users", async () => {
     const res = await request(app)
       .post("/profile/search")
       .send({ query: "invalid" })
