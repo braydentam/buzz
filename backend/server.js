@@ -9,6 +9,7 @@ const userRoutes = require("./routes/userRoutes");
 const buzzRoutes = require("./routes/buzzRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const rateLimiter = require("./middleware/rateLimiter");
+const User = require("./models/userModel");
 
 const app = express();
 
@@ -32,7 +33,11 @@ mongoose
   .then(() => {
     if (process.env.NODE_ENV !== "test") {
       app.listen(process.argv[2] || process.env.PORT, () => {
-        console.log("connected to db & listening on port", process.argv[2] || process.env.PORT);
+        User.setupBloomFilter();
+        console.log(
+          "connected to db & listening on port",
+          process.argv[2] || process.env.PORT
+        );
       });
       app.get("/", (req, res) => res.json("Buzz Server Online"));
     }

@@ -17,6 +17,8 @@
   "dependencies": {
     "@types/express": "^4.17.17",
     "bcrypt": "^5.1.0",
+    "bitset": "^5.1.1",
+    "buffer": "^6.0.3",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
@@ -29,6 +31,7 @@
     "mongodb": "^5.7.0",
     "mongoose": "^7.3.2",
     "multer": "^1.4.5-lts.1",
+    "murmurhash-js": "^1.0.0",
     "react-scripts": "^5.0.1",
     "supertest": "^6.3.3",
     "validator": "^13.9.0"

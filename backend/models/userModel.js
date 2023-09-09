@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const Schema = mongoose.Schema;
+const { createBloomFilter, updateBloomFilter, existsInBloomFilter} = require("../utils/bloomFilter");
 
 const userSchema = new Schema({
   name: {
@@ -25,14 +26,19 @@ userSchema.statics.signup = async function (name, username, password) {
   if (!name || !username || !password) {
     throw Error("All fields must be filled");
   }
-  const exists = await this.findOne({ username });
+  const exists = await existsInBloomFilter(username);
   if (exists) {
-    throw Error("Username already in use");
+    console.log("Caught by bloom filter")
+    const existsInDB = await this.findOne({ username });
+    if (existsInDB) {
+      throw Error("Username already in use");
+    }
   }
-
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
   const user = await this.create({ name, username, password: hash });
+  updateBloomFilter(username);
+
   return user;
 };
 
@@ -50,5 +56,11 @@ userSchema.statics.login = async function (username, password) {
   }
   return user;
 };
+
+userSchema.statics.setupBloomFilter = async function () {
+  const users = await this.find();
+  createBloomFilter(users);
+};
+
 
 module.exports = mongoose.model("User", userSchema);
