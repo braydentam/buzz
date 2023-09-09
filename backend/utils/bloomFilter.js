@@ -22,6 +22,7 @@ function existsInBloomFilter(username) {
 }
 
 async function updateBloomFilter(username) {
+  var b1, b2, b3, b4, b5;
   b1 = murmur.murmur3(username, 10) % BLOOM_FILTER_SIZE;
   bs.set(b1, 1);
   b2 = murmur.murmur3(username, 11) % BLOOM_FILTER_SIZE;
