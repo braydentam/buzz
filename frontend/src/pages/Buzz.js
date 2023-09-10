@@ -22,11 +22,6 @@ const Buzz = () => {
   }
 
   useEffect(() => {
-    buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
-  }, [buzz]);
-  //Sets the liked status, which shows the liked logo if a post is liked
-
-  useEffect(() => {
     let reqData = {
       id: id,
     };
@@ -56,6 +51,12 @@ const Buzz = () => {
     };
     getComments(reqData, response);
   }, [id, dispatchBuzz]);
+
+  useEffect(() => {
+    setLikeStatus("unliked");
+    buzz && buzz.likes && buzz.likes.map((like_id) => isLiked(like_id));
+  }, [buzz, id]);
+  //Sets the liked status, which shows the liked logo if a post is liked
 
   const handleProfile = () => {
     navigate("/profile/" + buzz.username);
@@ -94,7 +95,12 @@ const Buzz = () => {
       if (data["error"]) {
         setError(data["error"]);
       } else {
-        setBuzz(findBuzz(data["buzz"], id));
+        if(findBuzz(data["buzz"], id)){
+          setBuzz(findBuzz(data["buzz"], id));
+        }
+        else{
+          setBuzz(findBuzz(data["comment"], id));
+        }
         setLikeStatus(data["action"]);
         //finds the "parent" buzz being displayed from a list of buzzes and sets the "parent" buzz to be displayed and liked status
         setError("");
