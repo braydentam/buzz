@@ -1,4 +1,4 @@
-const DOMAIN = process.env.REACT_APP_DOMAIN;
+const DOMAIN = process.env.BACKEND_API;
 //const DOMAIN = "http://localhost:4000";
 
 //AUTHENTICATION
